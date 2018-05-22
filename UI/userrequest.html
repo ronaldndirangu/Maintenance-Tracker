@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="mystyle.css">
+        <title>Maintenance Tracker</title>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Create Request</a></li>
+                    <li><a href="#">Sign Up</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="card">
+            <div class="container">
+                <form action="">
+                    <div class="form-container">
+                        <h1>Maintenance Request Form</h1>
+                        <hr>
+                        <label for="requestdate"><b>Request Date:</b></label>
+                        <input type="datetime" placeholder="Date of request creation" name="requestdate" required>
+                        &nbsp;
+                        &nbsp;
+                        <label for="requester"><b>Requesting Party:</b></label>
+                        <input type="text" placeholder="Enter requesters name" name="requester" required>
+                        <br>
+                        <br>
+                        <label for="location"><b>Work location:</b></label>
+                        <input type="text" placeholder="Enter work location" name="location" required>
+                        <br>
+                        <br>
+                        <label for="description"><b>Description of work or repair:</b></label>
+                        <textarea id="description" name="description" placeholder="Describe work/repair.." 
+                        style="height:200px" required></textarea>
+                        <br>
+                        <br>
+                        <label for="priority"><b>Requested Prioity:</b></label>
+                        <select id="priority" name="priority" required>
+                            <option value="high">High (Must be done within 24 hours)</option>
+                            <option value="medium">Medium (Must be done within a week)</option>
+                            <option value="low">Low (Done when you get a chance)</option>
+                        </select>
+                    </div>
+                    <div class="clearfix">
+                        <button type="submit" class="requestbtn">Create Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+
+    </body>
+</html>
