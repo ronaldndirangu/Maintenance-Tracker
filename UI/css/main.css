@@ -125,12 +125,28 @@ body{
     color:  rgb(0, 77, 77);
 }
 
+.form-container-line h1, .form-container-line h2{
+    color:  rgb(0, 77, 77);
+}
+
 .form-container input[type=text], .form-container select, .form-container textarea {
     width: 100%;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+}
+
+.form-container-line input[type=text], .form-container-line select, .form-container-line textarea {
+    width: 100px;
+    padding: 10px 3px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-right: 4px;
     margin-top: 6px;
     margin-bottom: 16px;
     resize: vertical;
@@ -145,7 +161,22 @@ body{
     cursor: pointer;
 }
 
+.form-container-line input[type=submit]  {
+    float: right;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 35px;
+    margin: 5px auto;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .form-container #approve:hover, .form-container input[type=submit]:hover {
+    background-color: rgb(111, 214, 114);
+}
+
+.form-container-line input[type=submit]:hover {
     background-color: rgb(111, 214, 114);
 }
 
@@ -177,6 +208,14 @@ body{
 
 
 .form-container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    margin: 10px 50px 50px;
+}
+
+.form-container-line {
+    position: relative;
     border-radius: 5px;
     background-color: #f2f2f2;
     padding: 20px;
