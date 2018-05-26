@@ -222,6 +222,33 @@ body{
     margin: 10px 50px 50px;
 }
 
+
+#filterform {
+    margin: 10px 60px;
+}
+
+.tbcontrols{
+    margin-top: 360px;
+    margin-left: 600px;    
+}
+
+.tbcontrols #previous{
+    padding: 12px 18px;
+    border: none;
+    border-radius: 5px;
+}
+
+.tbcontrols #next{
+    padding: 12px 27px;
+    border: none;
+    border-radius: 5px;
+}
+
+.tbcontrols #previous:hover, .tbcontrols #next:hover { 
+    background-color: rgb(0, 77, 77);
+    color: white;
+}
+
 .footer{
     position: fixed;
     left: 0;
