@@ -84,9 +84,9 @@ body{
 }
 
 .container{
-    float: left
+    float: left;
     margin: 0 auto;
-    width: 80%
+    width: 80%;
     clear: both;
 }
 
@@ -96,7 +96,7 @@ body{
     border-collapse: collapse;
     width: 90%;
     margin: 10px 60px;
-    overflow: auto;
+    overflow: hidden;
 }
 
 #requests td, #requests th{
@@ -114,10 +114,138 @@ body{
 }
 
 #requests th{
-    paddin-top: 12px;
+    padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
     background-color:  #4CAF50;
+    color: white;
+}
+
+.form-container h1, .form-container h2{
+    color:  rgb(0, 77, 77);
+}
+
+.form-container-line h1, .form-container-line h2{
+    color:  rgb(0, 77, 77);
+}
+
+.form-container input[type=text], .form-container select, .form-container textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+}
+
+.form-container-line input[type=text], .form-container-line select, .form-container-line textarea {
+    width: 100px;
+    padding: 10px 3px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-right: 4px;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+}
+
+.form-container #approve, .form-container input[type=submit]  {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-container-line input[type=submit]  {
+    float: right;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 35px;
+    margin: 5px auto;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-container #approve:hover, .form-container input[type=submit]:hover {
+    background-color: rgb(111, 214, 114);
+}
+
+.form-container-line input[type=submit]:hover {
+    background-color: rgb(111, 214, 114);
+}
+
+.form-container #reject {
+    background-color: rgb(255, 0, 0);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-container #reject:hover {
+    background-color: rgb(255, 77, 77);
+}
+
+.form-container #resolve {
+    background-color: rgb(0, 77, 77);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-container #resolve:hover {
+    background-color: rgb(0, 128, 128);
+}
+
+
+.form-container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    margin: 10px 50px 50px;
+}
+
+.form-container-line {
+    position: relative;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    margin: 10px 50px 50px;
+}
+
+
+#filterform {
+    margin: 10px 60px;
+}
+
+.tbcontrols{
+    margin-top: 360px;
+    margin-left: 600px;    
+}
+
+.tbcontrols #previous{
+    padding: 12px 18px;
+    border: none;
+    border-radius: 5px;
+}
+
+.tbcontrols #next{
+    padding: 12px 27px;
+    border: none;
+    border-radius: 5px;
+}
+
+.tbcontrols #previous:hover, .tbcontrols #next:hover { 
+    background-color: rgb(0, 77, 77);
     color: white;
 }
 
@@ -130,3 +258,4 @@ body{
     color: white;
     text-align: center;
 }
+

@@ -10,7 +10,7 @@
 
 <body>
 	<div class="navbar">
-  		<a href="user-requests.html" id="navbrand">Maintenance Tracker</a>
+  		<a href="admin-filter.html" id="navbrand">Maintenance Tracker</a>
   		
   		<div class="dropdown" id="navright">
     		<button class="dropbtn">My Account
@@ -21,13 +21,18 @@
 	      		<a href="#">Logout</a>
     		</div>
  		</div>
- 		<a href="create-request.html" id="navright">Create Request</a>
 	</div>
 	<div class="container">
 
 		<form action="" class="form-container-line">
 			<label for="requestdate">Request Date:</label>
 			<input type="text" id="filterbydate" name="filterbydate" placeholder="DD/MM/YYYY">
+
+			<label for="firstname">First Name:</label>
+			<input type="text" id="firstname" name="firstname" placeholder="First Name">
+
+			<label for="lastname">Last Name:</label>
+			<input type="text" id="lastname" name="lastname" placeholder="Last Name">
 			
 			<label for="requestdate">Location:</label>
 			<input type="text" id="filterbylocation" name="filterbylocation" placeholder="Location"> 
@@ -113,7 +118,7 @@
 				<td>Liquids Plant</td>
 				<td>Low</td>
 				<td>Pending</td>
-			</tr>			
+			</tr>		
 		</table>
 		<form action="" class="tbcontrols">
 			<input id="previous" type="submit" value="Previous">
