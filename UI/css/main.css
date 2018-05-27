@@ -113,6 +113,11 @@ body{
     cursor: pointer;
 }
 
+#requests tr td a{
+    text-decoration: none;
+    color:  #4CAF50;
+}
+
 #requests th{
     padding-top: 12px;
     padding-bottom: 12px;
@@ -165,7 +170,7 @@ body{
     float: right;
     background-color: #4CAF50;
     color: white;
-    padding: 12px 35px;
+    padding: 12px 30px;
     margin: 5px auto;
     border: none;
     border-radius: 5px;
@@ -215,6 +220,7 @@ body{
 }
 
 .form-container-line {
+    width: 110%;
     position: relative;
     border-radius: 5px;
     background-color: #f2f2f2;
@@ -245,7 +251,7 @@ body{
 }
 
 .tbcontrols #previous:hover, .tbcontrols #next:hover { 
-    background-color: rgb(0, 77, 77);
+    background-color:  #4CAF50;
     color: white;
 }
 

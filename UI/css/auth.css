@@ -46,6 +46,10 @@ body{
 	color: white;
 }
 
+.login-box p a:hover, .signup-box p a:hover{
+	color: #4CAF50;
+}
+
 .textbox{
 	width: 100%;
 	overflow: hidden;
