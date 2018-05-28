@@ -126,3 +126,13 @@ body{
 	background-color: red;
 	color: white;
 }
+
+@media screen and (max-width: 600px){
+	body{
+		width: 30%;
+	}
+
+	.login-box, .signup-box{
+		width: 80%;
+	}
+}
