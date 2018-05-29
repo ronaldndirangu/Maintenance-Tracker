@@ -4,10 +4,10 @@ from datetime import datetime
 class TestUser(unittest.TestCase):
 
     def test_user_firstname_isalpha(self):
-        self.assertEqual(user["firstname"].isalpha(), True)
+        self.assertTrue(user["firstname"].isalpha(), msg=None)
 
     def test_user_lastname_isalpha(self):
-        self.assertEqual(user["lastname"].isalpha(), True)
+        self.assertTrue(user["lastname"].isalpha(), msg=None)
 
     def test_email_validity(self):
         self.assertIn('@', user["email"])
