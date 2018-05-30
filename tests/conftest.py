@@ -10,7 +10,7 @@ def new_user():
 @pytest.fixture(scope="module")
 def new_request():
     new_req = Request("15/04/2018", "Repair Motor", "Liquid Plant",
-                     "High", "Motor overheating due to unbalanced windings")
+                     "High", "Motor overheating due to unbalanced windings","Pending", "Ronald")
     return new_req
 
 @pytest.fixture(scope="module")
