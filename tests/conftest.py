@@ -1,10 +1,10 @@
 import pytest
-from API import create_app
+from app import create_app
 from models import User, Request
 
 @pytest.fixture(scope="module")
 def new_user():
-    user = User("Ronald", "Ndirangu", "ron@gmail.com", "rrrrnnnn")
+    user = User("1", "Ronald", "Ndirangu", "ron@gmail.com", "rrrrnnnn")
     return user
 
 @pytest.fixture(scope="module")
