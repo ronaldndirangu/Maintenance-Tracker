@@ -40,6 +40,7 @@ class TestRequests(unittest.TestCase):
         #test api to update a request
         response = self.client().post("/api/v1/users/requests/", data = json.dumps(self.request),
                     content_type='application/json')
+        self.assertEquals(response.status_code, 201)
 
 
     
