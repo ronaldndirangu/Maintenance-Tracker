@@ -6,7 +6,7 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
-  - pytest -v coveralls/tests/* --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
+  - pytest -v --with-coverage --cover-package=routes tests/*
 #run coverage tests
 after_success:
   - coveralls
