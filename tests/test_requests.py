@@ -2,7 +2,6 @@ import os
 import unittest
 import json
 from app import create_app
-from app.views import app
 
 class TestRequests(unittest.TestCase):
 
