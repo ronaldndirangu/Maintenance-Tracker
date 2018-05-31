@@ -93,4 +93,18 @@ def create_app(config_name):
 				else:
 					return jsonify({"login":"failed"}), 401
 
+	@app.route("/api/v1/users/signup", methods=["POST"])
+	def signup():
+		if request.json:
+			new_user = {
+				"user_id":len(users)+1,
+				"firstname":request.json['firstname'],
+				"lastname":request.json['lastname'],
+				"email":request.json['email'],
+				"password":request.json['password'],
+				"password":request.json['password']
+			}
+			users.append(new_user)
+			return jsonify(new_user), 201
+
 	return app
