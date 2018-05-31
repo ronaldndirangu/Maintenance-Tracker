@@ -84,4 +84,27 @@ def create_app(config_name):
 		update_request['type'] = request.json.get('type', update_request['type'])
 		return jsonify({'update_request': update_request}), 201
 
+	@app.route("/api/v1/users/login", methods=["POST"])
+	def login():
+		if request.json:
+			for user in users:
+				if user['email'] == request.json['email'] and user['password'] == request.json['password']:
+					return jsonify({"login":"successful"}), 200
+				else:
+					return jsonify({"login":"failed"}), 401
+
+	@app.route("/api/v1/users/signup", methods=["POST"])
+	def signup():
+		if request.json:
+			new_user = {
+				"user_id":len(users)+1,
+				"firstname":request.json['firstname'],
+				"lastname":request.json['lastname'],
+				"email":request.json['email'],
+				"password":request.json['password'],
+				"password":request.json['password']
+			}
+			users.append(new_user)
+			return jsonify(new_user), 201
+
 	return app
