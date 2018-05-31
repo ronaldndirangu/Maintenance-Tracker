@@ -9,5 +9,5 @@ script:
   - pytest -v
 #run coverage tests
 after_success:
-  - coverage report
+  - coveralls
 
