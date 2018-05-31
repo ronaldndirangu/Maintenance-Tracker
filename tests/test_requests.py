@@ -22,12 +22,25 @@ class TestRequests(unittest.TestCase):
 
     def test_api_for_user_create_request(self):
         #test endpoint to create request by user
-        response = self.client().post("/api/v1/users/requests/", data = json.dumps(self.request))
+        response = self.client().post("/api/v1/users/requests/", data = json.dumps(self.request),
+                    content_type='application/json')
         self.assertEquals(response.status_code, 201)
 
     def test_api_for_user_read_request(self):
-        resource = self.client().get('/api/v1/users/requests')
-        self.assertEqual(resource.status_code,200)
+        #test endpoint for user to view requests
+        response = self.client().get('/api/v1/users/requests')
+        self.assertEquals(response.status_code,200)
+
+    def test_api_to_view_a_request(self):
+        #test api to view request
+        response = self.client().get('/api/v1/users/requests/1')
+        self.assertEquals(response.status_code, 200)
+
+    def test_api_to_update_a_request(self):
+        #test api to update a request
+        response = self.client().post("/api/v1/users/requests/", data = json.dumps(self.request),
+                    content_type='application/json')
+
 
     
     

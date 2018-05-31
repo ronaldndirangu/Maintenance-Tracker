@@ -3,6 +3,24 @@ import json
 from instance.config import app_config
 
 
+users = [{"user_id": '1', "firstname": "Ron", "lastname": "Ndi", 
+		"email": "ron.ndi@gmail.com","password": 'rrrrnnnn'	},
+		{"user_id": '2', "firstname": "Trev","lastname": "Kar", 
+		"email": "trev.kar@gmail.com","password": 'ttttkkkk'},
+		]
+
+requests = [{"request_id":1,"date": '12/1/2018',"title": "Replace Motor",
+			"location": "Liquid Plant",	"priority":"High",
+			"description": "Motor overheating due to unbalanced windings",
+			"status":"pending",
+			"created_by":"John"},
+			{"request_id":2,"date": '12/1/2018',"title": "Replace Sensor",
+			"location": "Soap Plant","priority":"Medium",
+			"description": "Sensor misbehaving needs replacement",
+			"status":"approved",
+			"created_by":"Mary"},
+			]
+
 # define create_app to create and return Flask app
 def create_app(config_name):
 	app = Flask(__name__, instance_relative_config=True)
@@ -40,17 +58,17 @@ def create_app(config_name):
 		return resp
 
 
-		#View a specific request
-		@app.route("/api/v1/users/requests/<int:id>", methods=["GET"])
-		def get_request(id):
-			logged_in_user = 'John'
-			user_req=[]
-			for req in requests:
-				if req["created_by"]==logged_in_user and int(req["request_id"])==id:
-					user_req.append(req)
-			user_request = json.dumps(user_req)
-			resp = Response(user_request, status=200, mimetype="application/json")
-			return resp
+	#View a specific request
+	@app.route("/api/v1/users/requests/<int:id>", methods=["GET"])
+	def get_request(id):
+		logged_in_user = 'John'
+		user_req=[]
+		for req in requests:
+			if req["created_by"]==logged_in_user and int(req["request_id"])==id:
+				user_req.append(req)
+		user_request = json.dumps(user_req)
+		resp = Response(user_request, status=200, mimetype="application/json")
+		return resp
 
 	# Update a specific request
 	@app.route("/api/v1/users/requests/<int:id>/", methods=["POST"])
@@ -67,21 +85,3 @@ def create_app(config_name):
 		return jsonify({'update_request': update_request}), 201
 
 	return app
-
-users = [{"user_id": '1', "firstname": "Ron", "lastname": "Ndi", 
-		"email": "ron.ndi@gmail.com","password": 'rrrrnnnn'	},
-		{"user_id": '2', "firstname": "Trev","lastname": "Kar", 
-		"email": "trev.kar@gmail.com","password": 'ttttkkkk'},
-		]
-
-requests = [{"request_id":1,"date": '12/1/2018',"title": "Replace Motor",
-			"location": "Liquid Plant",	"priority":"High",
-			"description": "Motor overheating due to unbalanced windings",
-			"status":"pending",
-			"created_by":"John"},
-			{"request_id":2,"date": '12/1/2018',"title": "Replace Sensor",
-			"location": "Soap Plant","priority":"Medium",
-			"description": "Sensor misbehaving needs replacement",
-			"status":"approved",
-			"created_by":"Mary"},
-			]
