@@ -6,8 +6,8 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
-  - pytest -v --with-coverage --cover-package=routes tests/*
+  - pytest -v
 #run coverage tests
 after_success:
-  - coveralls
+  - coverage report
 
