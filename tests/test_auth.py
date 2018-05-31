@@ -32,7 +32,7 @@ class TestRequests(unittest.TestCase):
         response = self.client().post('/api/v1/users/signup', data = json.dumps(self.user3),
                     content_type = 'application/json') 
         self.assertEquals(response.status_code, 201)
-    
+   
 
 if __name__ == "__main__":
     unittest.main()
