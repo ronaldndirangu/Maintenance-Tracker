@@ -1,7 +1,7 @@
 import os
 import unittest
 import json
-from app import create_app, requests
+from app import create_app
 from app.views import app
 
 class TestRequests(unittest.TestCase):
@@ -12,7 +12,6 @@ class TestRequests(unittest.TestCase):
         self.app = create_app("testing")
         self.client = self.app.test_client 
         self.request ={
-                        "request_id":3,
                         "date": '12/1/2018',
                         "title": "Replace Motor",
                         "location": "Liquid Plant",
@@ -24,8 +23,7 @@ class TestRequests(unittest.TestCase):
 
     def test_api_for_user_create_request(self):
         #test endpoint to create request by user
-        response = self.client().post("/api/v1/users/requests/", data = json.dumps(self.request)
-                    ,content_type='application/json')
+        response = self.client().post("/api/v1/users/requests/", data = json.dumps(self.request))
         self.assertEquals(response.status_code, 201)
 
     def test_api_for_user_read_request(self):

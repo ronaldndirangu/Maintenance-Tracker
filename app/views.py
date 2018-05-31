@@ -60,8 +60,3 @@ def update_request(id):
 	update_request['description'] = request.json.get('description', update_request['description'])
 	update_request['type'] = request.json.get('type', update_request['type'])
 	return jsonify({'update_request': update_request}), 201
-		
-
-if __name__ == "__main__":
-	debug=True
-	app.run(host='0.0.0.0', port=5000)
