@@ -6,7 +6,7 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
-  - pytest -v coveralls/tests/test_auth.py  coveralls --cov-report term-missing
+  - pytest -v tests/*  coveralls --cov-report term-missing
 #run coverage tests
 after_success:
   - coveralls
