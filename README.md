@@ -5,8 +5,8 @@ To run the application follow this steps on the root directory:
   1. Enable your virtual environment
   2. run: pip install -r requirements.txt in your shell.
   3. Test the following endpoints using postman or curl:
-      -GET http://127.0.0.1/api/v1/users/requests/
-      -POST http://127.0.0.1/api/v1/users/requests/
-      -GET http://127.0.0.1/api/v1/users/requests/1
-      -POST http://127.0.0.1/api/v1/users/requests/1
+      a)GET http://127.0.0.1/api/v1/users/requests/
+      b)POST http://127.0.0.1/api/v1/users/requests/
+      c)GET http://127.0.0.1/api/v1/users/requests/1
+      d)POST http://127.0.0.1/api/v1/users/requests/1
   4. To run test on for the endpoint install pytest using pip and run pytest -v
