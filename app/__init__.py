@@ -84,4 +84,13 @@ def create_app(config_name):
 		update_request['type'] = request.json.get('type', update_request['type'])
 		return jsonify({'update_request': update_request}), 201
 
+	@app.route("/api/v1/users/login", methods=["POST"])
+	def login():
+		if request.json:
+			for user in users:
+				if user['email'] == request.json['email'] and user['password'] == request.json['password']:
+					return jsonify({"login":"successful"}), 200
+				else:
+					return jsonify({"login":"failed"}), 401
+
 	return app
