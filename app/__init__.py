@@ -106,5 +106,5 @@ def create_app(config_name):
 			}
 			users.append(new_user)
 			return jsonify(new_user), 201
-
+    
 	return app
