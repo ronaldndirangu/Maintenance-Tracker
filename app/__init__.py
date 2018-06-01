@@ -43,7 +43,7 @@ def create_app(config_name):
 		return jsonify(req), 200
 
 	# Update a specific request
-	@app.route("/api/v1/users/requests/<int:id>/", methods=["POST"])
+	@app.route("/api/v1/users/requests/<int:id>/", methods=["PUT"])
 	def update_request(id):
 		update_request = [request for request in requests if int(request['id'])==id]
 		if len(update_request) == 0:
@@ -54,7 +54,7 @@ def create_app(config_name):
 		update_request['title'] = request.json.get('title', update_request['title'])
 		update_request['description'] = request.json.get('description', update_request['description'])
 		update_request['type'] = request.json.get('type', update_request['type'])
-		return jsonify({'update_request': update_request}), 201
+		return jsonify({'update_request': update_request}), True
 
 	#Delete a specific user
 	@app.route("/api/v1/users/requests/<int:id>", methods=["DELETE"])
