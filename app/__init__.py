@@ -12,6 +12,11 @@ def create_app(config_name):
 	app.config.from_object(app_config[config_name])
 	app.config.from_pyfile("config.py")
 	
+	#Home Page
+	@app.route('/')
+	def home():
+		return "You are at the home page"
+		
 	# Create new request
 	@app.route("/api/v1/users/requests/", methods=["POST"])
 	def create_request():
