@@ -42,6 +42,12 @@ class TestRequests(unittest.TestCase):
                     content_type='application/json')
         self.assertEquals(response.status_code, 201)
 
+    def test_api_to_delete_a_request(self):
+        #test api to delete a request
+        response = self.client().delete('/api/v1/users/requests/1', data = json.dumps(self.request),
+                    content_type="application/json")
+        self.assertTrue(response.status_code)
+
 
     
     

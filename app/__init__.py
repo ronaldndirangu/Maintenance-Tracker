@@ -1,7 +1,9 @@
 from flask import Flask, Response, abort, request, jsonify
 import json
 from instance.config import app_config
-from app.models import users, requests
+
+requests = []
+users = []
 
 
 # define create_app to create and return Flask app
@@ -31,27 +33,14 @@ def create_app(config_name):
 	#View user requests for logged in user
 	@app.route("/api/v1/users/requests", methods=["GET"])
 	def user_requests():
-		logged_in_user = 'John'
-		user_req=[]
-		for req in requests:
-			if req["created_by"]==logged_in_user:
-				user_req.append(req)
-		user_requests = json.dumps(user_req)
-		resp = Response(user_requests, status=200, mimetype='application/json')
-		return resp
+		return jsonify({'requests':requests}), 200 
 
 
 	#View a specific request
 	@app.route("/api/v1/users/requests/<int:id>", methods=["GET"])
 	def get_request(id):
-		logged_in_user = 'John'
-		user_req=[]
-		for req in requests:
-			if req["created_by"]==logged_in_user and int(req["request_id"])==id:
-				user_req.append(req)
-		user_request = json.dumps(user_req)
-		resp = Response(user_request, status=200, mimetype="application/json")
-		return resp
+		req = [request for request in requests if int(request['request_id'])==id]
+		return jsonify(req), 200
 
 	# Update a specific request
 	@app.route("/api/v1/users/requests/<int:id>/", methods=["POST"])
@@ -67,15 +56,24 @@ def create_app(config_name):
 		update_request['type'] = request.json.get('type', update_request['type'])
 		return jsonify({'update_request': update_request}), 201
 
+	#Delete a specific user
+	@app.route("/api/v1/users/requests/<int:id>", methods=["DELETE"])
+	def del_request(id):
+		for request in requests:
+			if request["request_id"] == id:
+				requests.remove(request)
+			return jsonify({'requests':requests}), True
+
+	#User can login using email and password
 	@app.route("/api/v1/users/login", methods=["POST"])
 	def login():
 		if request.json:
 			for user in users:
 				if user['email'] == request.json['email'] and user['password'] == request.json['password']:
 					return jsonify({"login":"successful"}), 200
-				else:
-					return jsonify({"login":"failed"}), 401
+			return jsonify({"login":"failed"}), 401
 
+	#user can signup
 	@app.route("/api/v1/users/signup", methods=["POST"])
 	def signup():
 		if request.json:
