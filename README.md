@@ -3,6 +3,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/badges/shields.svg)
 [![codecov](https://codecov.io/gh/ronaldndirangu/Maintenance-Tracker/branch/develop/graph/badge.svg)](https://codecov.io/gh/ronaldndirangu/Maintenance-Tracker)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Django.svg)
 
 
 ## Introduction
