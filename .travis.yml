@@ -8,5 +8,5 @@ install:
 script:
   - pytest --cov-report= --cov=app/ tests
 #run coverage tests
-after_success:s
+after_success:
   - coveralls
