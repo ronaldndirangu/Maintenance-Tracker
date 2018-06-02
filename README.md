@@ -1,9 +1,9 @@
 # Maintenance-Tracker
 [![Build Status](https://travis-ci.org/ronaldndirangu/Maintenance-Tracker.svg?branch=develop)](https://travis-ci.org/ronaldndirangu/Maintenance-Tracker)
 [![Coverage Status](https://coveralls.io/repos/github/ronaldndirangu/Maintenance-Tracker/badge.svg?branch=develop)](https://coveralls.io/github/ronaldndirangu/Maintenance-Tracker?branch=develop)
-#Introduction
+# Introduction
 An application that provides users with the ability to reach out to operations or repairs department regarding repair or maintenance requests and monitor the status of their request.
-##Features
+## Features
 1.Users can create an account and log in.
 2. The users should be able to make maintenance or repairs request.
 3. An admin should be able to approve/reject a repair/maintenance request.
@@ -11,19 +11,19 @@ An application that provides users with the ability to reach out to operations o
 5. The admin should be able to view all maintenance/repairs requests on the application
 6. The admin should be able to filter requests
 7. The user can view all his/her requests
-#Installation and setup
+# Installation and setup
 For installation and setup of the application have the following installed
 1.git to access the repo
 2.virtualenv to create a virtual environment
-##Clone the repo
+## Clone the repo
 ```bash
   git clone https://github.com/ronaldndirangu/Maintenance-Tracker.git
 ```
-##Navigate to the root directory.
+## Navigate to the root directory.
 ```bash
   cd Maintenance-Tracker/
 ```
-##Create virtual environment
+## Create virtual environment
 On linux
 ```bash
   python3 -m venv venv
@@ -32,7 +32,7 @@ On windows
 ```bash
   py -3 -m venv venv
 ```
-##Activate virtual environment
+## Activate virtual environment
 On linux
 ```bash
   source venv/bin/activate
@@ -41,16 +41,16 @@ On windows
 ```bash
   \Python3\Scripts\virtualenv.exe venv
 ```
-##Install dependancies
+## Install dependancies
 On your shell run
 ```bash
   pip install -r requirements.txt
 ```
-##Running the application
+## Running the application
 ```bash
   python3 run.py
 ```
-##Endpoints
+## Endpoints
 All endpoints can be accessed using the following url using curl or postman
 ```bash
   http://127.0.0.1/api/v1/
@@ -66,7 +66,7 @@ PUT /api/v1/users/request/<requestid> | User can edit a specific request
 GET /api/v1/users/request/<requestid> | User view a specific request
 DELETE /api/v1/users/request/<requestid> | User can delete a specific request
   
-##Testing
+## Testing
 To test the application run the following command on your shell
 ```bash
   pytest -v
