@@ -10,3 +10,4 @@ script:
 #run coverage tests
 after_success:
   - coveralls
+  - codecov --token=385b5cb4-8b1a-4aaa-8543-18f855d481bd
