@@ -56,6 +56,7 @@ All endpoints can be accessed using the following url using curl or postman
   http://127.0.0.1/api/v1/
 ```
 Below are the available endpoints
+
 Endpoint | Task
 ------------ | -------------
 POST /api/v1/users/login | User can login to the application
