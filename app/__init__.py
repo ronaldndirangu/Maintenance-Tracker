@@ -70,7 +70,7 @@ def create_app(config_name):
 			return jsonify({'requests':requests}), True
 
 	#User can login using email and password
-	@app.route("/api/v1/users/login", methods=["POST"])
+	@app.route("/api/v1/users/login", methods=["GET"])
 	def login():
 		if request.json:
 			for user in users:

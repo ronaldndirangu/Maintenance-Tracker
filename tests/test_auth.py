@@ -15,13 +15,13 @@ class TestRequests(unittest.TestCase):
 
     def test_valid_user_login(self):
         #test api for user login successful
-        response = self.client().post('/api/v1/users/login', data = json.dumps(self.user),
+        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user),
                     content_type = 'application/json') 
         self.assertEquals(response.status_code, 200)
 
     def test_invalid_user_login(self):
         #test api for user login unsuccessful
-        response = self.client().post('/api/v1/users/login', data = json.dumps(self.user),
+        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user),
                     content_type = 'application/json') 
         self.assertEquals(response.status_code, 401)
 
