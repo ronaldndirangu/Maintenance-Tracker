@@ -18,7 +18,7 @@ def create_app(config_name):
 		return "You are at the home page"
 		
 	# Create new request
-	@app.route("/api/v1/users/requests/", methods=["POST"])
+	@app.route("/api/v1/users/requests", methods=["POST"])
 	def create_request():
 		if not request.json:
 			abort(400)
@@ -48,18 +48,18 @@ def create_app(config_name):
 		return jsonify(req), 200
 
 	# Update a specific request
-	@app.route("/api/v1/users/requests/<int:id>/", methods=["PUT"])
+	@app.route("/api/v1/users/requests/<int:id>", methods=["PUT"])
 	def update_request(id):
-		update_request = [request for request in requests if int(request['id'])==id]
+		update_request = [request for request in requests if int(request['request_id'])==id]
 		if len(update_request) == 0:
 			abort(404)
 		if not request.json:
 			abort(400)  
 
-		update_request['title'] = request.json.get('title', update_request['title'])
-		update_request['description'] = request.json.get('description', update_request['description'])
-		update_request['type'] = request.json.get('type', update_request['type'])
-		return jsonify({'update_request': update_request}), True
+		update_request[0]['title'] = request.json.get('title', update_request[0]['title'])
+		update_request[0]['description'] = request.json.get('description', update_request[0]['description'])
+		update_request[0]['priority'] = request.json.get('type', update_request[0]['priority'])
+		return jsonify({'requests': requests}), True
 
 	#Delete a specific user
 	@app.route("/api/v1/users/requests/<int:id>", methods=["DELETE"])
@@ -87,7 +87,6 @@ def create_app(config_name):
 				"firstname":request.json['firstname'],
 				"lastname":request.json['lastname'],
 				"email":request.json['email'],
-				"password":request.json['password'],
 				"password":request.json['password']
 			}
 			users.append(new_user)
