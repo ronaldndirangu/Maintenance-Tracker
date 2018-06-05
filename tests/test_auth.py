@@ -1,14 +1,13 @@
 import os
 import unittest
 import json
-from app import create_app
+from app.views import app
 
 class TestRequests(unittest.TestCase):
 
-
     def setUp(self):
         #Initialize our variable before test        
-        self.app = create_app("testing")
+        self.app = app
         self.client = self.app.test_client
         self.user = {"user_id": '1', "firstname": "Ron", "lastname": "Ndi", 
 		                "email": "ron.ndi@gmail.com","password": 'rrrrnnnn'	}
