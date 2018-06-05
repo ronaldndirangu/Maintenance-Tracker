@@ -1,13 +1,13 @@
 import os
 import unittest
 import json
-from app.views import app
+from app import create_app
 
 class TestRequests(unittest.TestCase):
 
     def setUp(self):
         #Initialize our variable before test	    
-        self.app = app
+        self.app = create_app("testing")
         self.client = self.app.test_client 
         self.request ={
                         "date": '12/1/2018',
