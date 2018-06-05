@@ -1,14 +1,13 @@
 import os
 import unittest
 import json
-from app import create_app
+from app.views import app
 
 class TestRequests(unittest.TestCase):
 
-
     def setUp(self):
         #Initialize our variable before test	    
-        self.app = create_app("testing")
+        self.app = app
         self.client = self.app.test_client 
         self.request ={
                         "date": '12/1/2018',
@@ -47,9 +46,6 @@ class TestRequests(unittest.TestCase):
         response = self.client().delete('/api/v1/users/requests/1')
         self.assertTrue(response.status_code)
 
-
-    
-    
 
 if __name__ == "__main__":
     unittest.main()
