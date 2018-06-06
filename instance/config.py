@@ -2,6 +2,8 @@
 
 import os
 
+SECRET_KEY = "Mysecret"
+
 class Config(object):
     """Base config class"""
     DEBUG = False

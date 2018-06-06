@@ -1,32 +1,36 @@
 import os
 import unittest
 import json
-from app.views import app
+from app import create_app
 
 class TestRequests(unittest.TestCase):
 
     def setUp(self):
         #Initialize our variable before test        
-        self.app = app
+        self.app = create_app('testing')
         self.client = self.app.test_client
-        self.user = {"user_id": '1', "firstname": "Ron", "lastname": "Ndi", 
-		                "email": "ron.ndi@gmail.com","password": 'rrrrnnnn'	}
+        self.user1 = {"user_id": '1', "firstname": "Ron", "lastname": "Ndi", 
+		                "email": "ron.ndi@gmail.com","password": 'test'	}
+        self.user2 = {"user_id": '1', "firstname": "Ron", "lastname": "Ndi", 
+		                "email": "ron.ndi@gmail.com","password": 'wrong'}                
 
     def test_valid_user_login(self):
         #test api for user login successful
-        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user),
-                    content_type = 'application/json') 
-        self.assertEquals(response.status_code, 200)
+        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user1),
+                    content_type = 'application/json')
+        data = json.loads(response.data.decode()) 
+        self.assertTrue(data['token'])
 
     def test_invalid_user_login(self):
         #test api for user login unsuccessful
-        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user),
-                    content_type = 'application/json') 
+        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user2),
+                    content_type = 'application/json')
+        data = json.loads(response.data.decode()) 
         self.assertEquals(response.status_code, 401)
 
     def test_user_signup(self):
         #test api for user signup unsuccessful
-        response = self.client().post('/api/v1/users/signup', data = json.dumps(self.user),
+        response = self.client().post('/api/v1/users/signup', data = json.dumps(self.user1),
                     content_type = 'application/json') 
         self.assertEquals(response.status_code, 201)
     
