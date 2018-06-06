@@ -1,0 +1,48 @@
+import psycopg2
+
+def create_tables():
+    #Create users and requests tables
+    commands = (
+        """
+        CREATE TABLE IF NOT EXISTS users(
+            user_id SERIAL PRIMARY KEY,
+            username VARCHAR(100) NOT NULL,
+            email VARCHAR(100) NOT NULL,
+            password VARCHAR(100) NOT NULL,
+            role BOOLEAN
+        )
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS requests(
+            request_id SERIAL PRIMARY KEY,
+            request_date TIMESTAMP NOT NULL,
+            request_title VARCHAR(100) NOT NULL,
+            request_description VARCHAR(255) NOT NULL,
+            request_location VARCHAR(100) NOT NULL,
+            request_priority VARCHAR(100) NOT NULL,
+            request_status VARCHAR(100) NOT NULL,
+            requester_id INT NOT NULL,
+            FOREIGN KEY (requester_id) REFERENCES users(user_id) ON DELETE CASCADE
+        )
+        """
+    )
+
+    conn = None
+    try:
+        conn = psycopg2.connect(host="localhost", database="postgres", user="postgres", password="postgres")
+        cur = conn.cursor()
+
+        for command in commands:
+            cur.execute(command)
+        
+        cur.close()
+        conn.commit()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+
+
+if __name__ == "__main__":
+    create_tables()

@@ -1,14 +1,21 @@
-class User:
+import psycopg2
 
-    def __init__(self, user_id, firstname, lastname, email, password):
-        self.user_id = user_id
-        self.firstname = firstname
-        self.lastname = lastname
-        self.email = email
-        self.password = password
+conn = psycopg2.connect(host="localhost", database="postgres", user="postgres", password="postgres")
+cur = conn.cursor()
 
-    def __str__(self):
-        return '<User: {}+" "+{}>'.format(self.firstname, self.lastname)  
+class User():
+    def __init__(self):
+        pass
+
+    def create_user(self, username, email, password, role=False):
+        sql = "INSERT INTO users (username, email, password, role)\
+                            VALUES (%s, %s, %s, %s)"
+        data = (username, email, password, role)
+        cur.execute(sql, data)
+                    
+        conn.commit()
+        cur.close()
+        print ("New user added to user table")
 
 class Request:
 

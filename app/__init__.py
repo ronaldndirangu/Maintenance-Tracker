@@ -1,11 +1,13 @@
 from flask import Flask, Response, abort, request, jsonify
 import json
 from instance.config import app_config, SECRET_KEY
+from app.models import User
 import jwt
 import datetime
 
+Users= User()
+users=[]
 requests = []
-users = [{"username":"ronald", "password":"test", "email": "ron.ndi@gmail.com"}]
 
 # define create_app to create and return Flask app
 def create_app(config_name):
@@ -90,14 +92,11 @@ def create_app(config_name):
 	def signup():
 		if request.json:
 			new_user = {
-				"user_id":len(users)+1,
-				"firstname":request.json['firstname'],
-				"lastname":request.json['lastname'],
-				"email":request.json['email'],
-				"password":request.json['password'],
-				"password":request.json['password']
-			}
-			users.append(new_user)
-			return jsonify(new_user), 201
+						"username":request.json['username'],
+						"email":request.json['email'],
+						"password":request.json['password']
+					}
+			Users.create_user(new_user['username'], new_user['email'], new_user['password'])
+			return "User created"
 
 	return app
