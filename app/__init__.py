@@ -1,11 +1,14 @@
 from flask import Flask, Response, abort, request, jsonify
 import json
 from instance.config import app_config, SECRET_KEY
+from app.models import User
 import jwt
 import datetime
 
+
+Users= User()
+users=[]
 requests = []
-users = [{"username":"ronald", "password":"test", "email": "ron.ndi@gmail.com"}]
 
 # define create_app to create and return Flask app
 def create_app(config_name):
@@ -73,31 +76,31 @@ def create_app(config_name):
 	#User can login using email and password
 	@app.route("/api/v1/users/login", methods=["GET"])
 	def login():
-		if request.json:
+		if request.authorization:
+			username = request.authorization["username"]
+			password = request.authorization["password"]
+		elif request.json:
+			username = request.json["username"]
+			password = request.json["password"]
+		
+		users = Users.login(username, password)
+		if users:
 			for user in users:
-				if user['email']==request.json['email'] and user['password']==request.json['password']:
-					token = jwt.encode({"email" : "email", 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, SECRET_KEY)
+				print (user)
+				if user['username'] == username and user['password'] == password:
+					token = jwt.encode({"username" : "username", 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, SECRET_KEY)
 					return jsonify({'token':token.decode('UTF-8')}), 200
-				return jsonify({"login": "failed"}), 401
-		auth = request.authorization
-		for user in users:
-			if user['username'] == auth.username and user['password'] == auth.password:
-				token = jwt.encode({"username" : "username", 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, SECRET_KEY)
-				return jsonify({'token':token.decode('UTF-8')}), 200
-		return jsonify({"login":"failed"}), 401
+		return jsonify({"message":"no valid user"}), 401
 
 	@app.route("/api/v1/users/signup", methods=["POST"])
 	def signup():
 		if request.json:
 			new_user = {
-				"user_id":len(users)+1,
-				"firstname":request.json['firstname'],
-				"lastname":request.json['lastname'],
-				"email":request.json['email'],
-				"password":request.json['password'],
-				"password":request.json['password']
-			}
-			users.append(new_user)
-			return jsonify(new_user), 201
+						"username":request.json['username'],
+						"email":request.json['email'],
+						"password":request.json['password']
+					}
+			Users.create_user(new_user['username'], new_user['email'], new_user['password'])
+			return jsonify({'message':'User created successfully'}), 201
 
 	return app
