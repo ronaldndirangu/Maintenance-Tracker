@@ -10,7 +10,13 @@ class TestRequests(unittest.TestCase):
         self.app = create_app('testing')
         self.client = self.app.test_client
         self.user = {"username":'test', "email":'test@gmail.com', "password":'test123'}	
-        self.user2 = {"username":'test', "email":'test@gmail.com', "password":'wrong'}              
+        self.user2 = {"username":'test', "email":'test@gmail.com', "password":'wrong'} 
+
+    def test_user_signup(self):
+        #test api for user signup unsuccessful
+        response = self.client().post('/api/v1/users/signup', data = json.dumps(self.user),
+                    content_type = 'application/json') 
+        self.assertEquals(response.status_code, 201)             
 
     def test_valid_user_login(self):
         #test api for user login successful
@@ -25,14 +31,6 @@ class TestRequests(unittest.TestCase):
                     content_type = 'application/json')
         data = json.loads(response.data.decode()) 
         self.assertEquals(response.status_code, 401)
-        
-
-    def test_user_signup(self):
-        #test api for user signup unsuccessful
-        response = self.client().post('/api/v1/users/signup', data = json.dumps(self.user),
-                    content_type = 'application/json') 
-        self.assertEquals(response.status_code, 201)
-
     
 
 if __name__ == "__main__":

@@ -4,6 +4,9 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+before_script:
+  - psql -c "CREATE DATABASE postgres;" -U postgres
+  - psql -c "ALTER USER postgres WITH PASSWORD 'postgres';" -U postgres
 # command to run tests
 script:
   - pytest --cov-report= --cov=app/ tests
