@@ -7,7 +7,6 @@ install:
 services:
   - postgresql
 before_script:
-  - psql -c "CREATE DATABASE IF NOT EXISTS postgres;" -U postgres
   - psql -c "ALTER USER postgres WITH PASSWORD 'postgres';" -U postgres
 # command to run tests
 script:
