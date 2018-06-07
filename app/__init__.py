@@ -90,8 +90,7 @@ def create_app(config_name):
 				if user['username'] == username and user['password'] == password:
 					token = jwt.encode({"username" : "username", 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, SECRET_KEY)
 					return jsonify({'token':token.decode('UTF-8')}), 200
-				return jsonify({"login":"failed"}), 401	
-		return jsonify({"message":"no valid user"})
+		return jsonify({"message":"no valid user"}), 401
 
 	@app.route("/api/v1/users/signup", methods=["POST"])
 	def signup():
