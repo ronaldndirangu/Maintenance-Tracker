@@ -4,6 +4,8 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+services:
+  - postgresql
 before_script:
   - psql -c "CREATE DATABASE postgres;" -U postgres
   - psql -c "ALTER USER postgres WITH PASSWORD 'postgres';" -U postgres
