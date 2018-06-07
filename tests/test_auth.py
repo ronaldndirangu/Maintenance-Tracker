@@ -9,17 +9,15 @@ class TestRequests(unittest.TestCase):
         #Initialize our variable before test        
         self.app = create_app('testing')
         self.client = self.app.test_client
-        self.user1 = {"user_id": '1', "firstname": "Ron", "lastname": "Ndi", 
-		                "email": "ron.ndi@gmail.com","password": 'test'	}
-        self.user2 = {"user_id": '1', "firstname": "Ron", "lastname": "Ndi", 
-		                "email": "ron.ndi@gmail.com","password": 'wrong'}                
+        self.user = {"username":'test', "email":'test@gmail.com', "password":'test123'}	
+        self.user2 = {"username":'test', "email":'test@gmail.com', "password":'wrong'}              
 
     def test_valid_user_login(self):
         #test api for user login successful
-        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user1),
+        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user),
                     content_type = 'application/json')
         data = json.loads(response.data.decode()) 
-        self.assertTrue(data['token'])
+        self.assertTrue(data["token"])
 
     def test_invalid_user_login(self):
         #test api for user login unsuccessful
@@ -27,12 +25,14 @@ class TestRequests(unittest.TestCase):
                     content_type = 'application/json')
         data = json.loads(response.data.decode()) 
         self.assertEquals(response.status_code, 401)
+        
 
     def test_user_signup(self):
         #test api for user signup unsuccessful
-        response = self.client().post('/api/v1/users/signup', data = json.dumps(self.user1),
+        response = self.client().post('/api/v1/users/signup', data = json.dumps(self.user),
                     content_type = 'application/json') 
         self.assertEquals(response.status_code, 201)
+
     
 
 if __name__ == "__main__":

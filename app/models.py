@@ -1,13 +1,16 @@
 import psycopg2
+from flask import jsonify
+from instance.config import SECRET_KEY
 
 conn = psycopg2.connect(host="localhost", database="postgres", user="postgres", password="postgres")
-cur = conn.cursor()
+
 
 class User():
     def __init__(self):
         pass
 
     def create_user(self, username, email, password, role=False):
+        cur = conn.cursor()
         sql = "INSERT INTO users (username, email, password, role)\
                             VALUES (%s, %s, %s, %s)"
         data = (username, email, password, role)
@@ -16,6 +19,16 @@ class User():
         conn.commit()
         cur.close()
         print ("New user added to user table")
+
+    def login(self, name, pswd):
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE username = (%s)", [name]) 
+        columns = ('user_id', 'username', 'email', 'password', 'role')               
+        users = []
+        for user in cur.fetchall():
+            users.append(dict(zip(columns, user)))   
+        return users
+               
 
 class Request:
 
