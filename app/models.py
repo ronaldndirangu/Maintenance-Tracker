@@ -1,4 +1,5 @@
 import psycopg2
+import datetime
 from flask import jsonify
 from instance.config import SECRET_KEY
 
@@ -41,15 +42,48 @@ class User():
 
 class Request:
 
-    def __init__(self, request_id, date, title, location, priority, description, status, created_by):
-        self.request_id = request_id
-        self.date = date
-        self.title = title
-        self.location = location
-        self.priority = priority
-        self.description = description
-        self.status = status
-        self.created_by = created_by
+    def __init__(self):
+        pass
 
-    def __str__(self):
-        return '<User: {}+" "+{}>'.format(self.title, self.description)
+    def create_request(self, request_title, request_description, request_location,
+                            request_priority, request_status, requester_id):
+        cur = conn.cursor()
+        sql = "INSERT INTO requests(request_date, request_title, request_description, request_location,\
+                                    request_priority, request_status, requester_id)\
+                            VALUES (%s, %s, %s, %s, %s, %s, %s);"
+        date = datetime.datetime.now()
+        data = (date, request_title, request_description, request_location,
+                 request_priority, request_status, requester_id)
+        cur.execute(sql, data)
+
+        conn.commit()
+        cur.close()
+
+        print ("New request added to user table")
+
+    def get_all_requests(self):
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM requests;")
+        columns = ('request_id','request_date', 'request_title', 'request_description', 
+                    'request_location', 'request_priority', 'request_status', 'requester_id')
+        requests = []
+        for request in cur.fetchall():
+            print (request)
+            requests.append(dict(zip(columns, request)))
+        return requests
+
+    def get_a_request(self, id):
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM requests WHERE request_id = (%s)", [id])
+        columns = ('request_id','request_date', 'request_title', 'request_description', 
+                    'request_location', 'request_priority', 'request_status', 'requester_id')
+        requests = []
+        for request in cur.fetchall():
+            print (request)
+            requests.append(dict(zip(columns, request)))
+        return requests
+
+    def update_a_request(self, id, title, description):
+        pass
+        
+        
