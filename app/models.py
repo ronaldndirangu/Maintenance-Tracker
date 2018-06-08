@@ -28,7 +28,16 @@ class User():
         for user in cur.fetchall():
             users.append(dict(zip(columns, user)))   
         return users
-               
+        
+
+    def get_user(self, id):
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE user_id = (%s)", [id])
+        columns = ('user_id', 'username', 'email', 'password', 'role')
+        users = []
+        for user in cur.fetchall():
+            users.append(dict(zip(columns, user)))   
+        return users
 
 class Request:
 
