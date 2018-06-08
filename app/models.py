@@ -10,7 +10,7 @@ class User():
     def __init__(self):
         pass
 
-    def create_user(self, username, email, password, role=False):
+    def create_user(self, username, email, password, role):
         cur = conn.cursor()
         sql = "INSERT INTO users (username, email, password, role)\
                             VALUES (%s, %s, %s, %s)"
@@ -30,7 +30,6 @@ class User():
             users.append(dict(zip(columns, user)))   
         return users
         
-
     def get_user(self, id):
         cur = conn.cursor()
         cur.execute("SELECT * FROM users WHERE user_id = (%s)", [id])
@@ -39,6 +38,14 @@ class User():
         for user in cur.fetchall():
             users.append(dict(zip(columns, user)))   
         return users
+
+    def get_role(self, id):
+        cur = conn.cursor()
+        cur.execute("SELECT role FROM users WHERE user_id = (%s)", [id])
+        roles = []
+        for role in cur.fetchall():
+            roles.append(role)
+        return roles
 
 class Request:
 
@@ -61,17 +68,17 @@ class Request:
 
         print ("New request added to user table")
 
-    def get_all_requests(self):
+    def get_user_requests(self, id):
         cur = conn.cursor()
-        cur.execute("SELECT * FROM requests;")
+        cur.execute("SELECT * FROM requests WHERE requester_id = (%s)", [id])
         columns = ('request_id','request_date', 'request_title', 'request_description', 
                     'request_location', 'request_priority', 'request_status', 'requester_id')
         requests = []
         for request in cur.fetchall():
-            print (request)
             requests.append(dict(zip(columns, request)))
         return requests
 
+    
     def get_a_request(self, id):
         cur = conn.cursor()
         cur.execute("SELECT * FROM requests WHERE request_id = (%s)", [id])
@@ -83,7 +90,21 @@ class Request:
             requests.append(dict(zip(columns, request)))
         return requests
 
-    def update_a_request(self, id, title, description):
-        pass
-        
+    def update_a_request(self, id, title, description, priority):
+        cur = conn.cursor()
+        sql = "UPDATE requests SET request_title=(%s), request_description=(%s), request_priority=(%s)\
+                    WHERE request_id = (%s)"
+        data = (title, description, priority, id)
+        cur.execute(sql, data)
+        return {'message':'request updated successfully'}
+
+    def get_all_requests(self):
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM requests;")
+        columns = ('request_id','request_date', 'request_title', 'request_description', 
+                    'request_location', 'request_priority', 'request_status', 'requester_id')
+        requests = []
+        for request in cur.fetchall():
+            requests.append(dict(zip(columns, request)))
+        return requests
         

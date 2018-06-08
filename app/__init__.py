@@ -9,8 +9,6 @@ from functools import wraps
 
 Users= User()
 Requests= Request()
-users=[]
-requests = []
 
 # define create_app to create and return Flask app
 def create_app(config_name):
@@ -31,13 +29,11 @@ def create_app(config_name):
 			
 			try:
 				data = jwt.decode(token, SECRET_KEY)
-				users = Users.get_user(data['user_id'])
-				for user in users:
-					current_user = jsonify(user)
-					return current_user
+				kwargs['current_user_id']=data['user_id']
+	
 			except:
 				return jsonify({'message':'Invalid token'}), 401
-			return f(current_user, *args, **kwargs)
+			return f(*args, **kwargs)
 		return decorated
 
 
@@ -48,9 +44,10 @@ def create_app(config_name):
 			new_user = {
 						"username":request.json['username'],
 						"email":request.json['email'],
-						"password":request.json['password']
+						"password":request.json['password'],
+						"role":request.json['role']
 					}
-			Users.create_user(new_user['username'], new_user['email'], new_user['password'])
+			Users.create_user(new_user['username'], new_user['email'], new_user['password'], new_user['role'])
 			return jsonify({'message':'User created successfully'}), 201
 
 	#User can login using email and password
@@ -73,7 +70,8 @@ def create_app(config_name):
 
 	# Create new request
 	@app.route("/api/v1/users/requests", methods=["POST"])
-	def create_request():
+	@login_required
+	def create_request(current_user_id):
 		if not request.json:
 			abort(404)		
 		req = {
@@ -82,48 +80,69 @@ def create_app(config_name):
 			"request_location":request.json['request_location'],
 			"request_priority":request.json['request_priority'],			
 			"request_status":request.json['request_status'],
-			"requester_id":request.json['requester_id']
+			"requester_id":current_user_id
 		}
+		
 		Requests.create_request(req['request_title'], req['request_description'], req['request_location'], 
 								req['request_priority'], req['request_status'],	req['requester_id'])
 		return jsonify({'message':'Request created successfully'}), 201
 
 	#View user requests for logged in user
 	@app.route("/api/v1/users/requests", methods=["GET"])
-	def user_requests():
-		requests = Requests.get_all_requests()
-		if requests:
-			return jsonify(requests), 200
-		return jsonify({'message':'no requests found'})
-
+	@login_required
+	def user_requests(current_user_id):
+		user_req = Requests.get_user_requests(current_user_id)
+		return jsonify(user_req), 200
+		
 
 	#View a specific request
 	@app.route("/api/v1/users/requests/<int:id>", methods=["GET"])
-	def get_request(id):
+	@login_required
+	def get_request(current_user_id, id):
 		req_id = int(id)
-		requests = Requests.get_a_request(req_id)
-		if requests:
-			return jsonify(requests), 200
-		return jsonify({'message':'no requests found'})
+		request = Requests.get_a_request(req_id)
+		if request[0]['requester_id'] == current_user_id:
+			return jsonify(request), 200
+		return jsonify({'message':'Not authorized to view request'})
 
 	# Update a specific request
 	@app.route("/api/v1/users/requests/<int:id>", methods=["PUT"])
-	def update_request(id):
-		pass
+	@login_required
+	def update_request(current_user_id, id):
+		if not request.json:
+			abort(404)
+		title = request.json['request_title']
+		description = request.json['request_description']
+		priority = request.json['request_priority']
+		message = Requests.update_a_request(id, title, description, priority)
+		if message:
+			return jsonify(message)
+		else:
+			return ({'message':'update failed'})
 
+	#Admin can view all requests
+	@app.route("/api/v1/requests")
+	@login_required
+	def get_admin_requests(current_user_id):
+		if Users.get_role(current_user_id):
+			req = Requests.get_all_requests()
+			if req[0]:
+				return jsonify(req), 200
+			return jsonify({'message':'no requests found'})
+		return jsonify({'message', 'Not admin'})
 
 	# Approve a request
-	@app.route("/api/v1/users/requests/<int:id>/approve", methods=["PUT"])
+	@app.route("/api/v1/requests/<int:id>/approve", methods=["PUT"])
 	def approve_request(id):
 		pass
 
 	# Dissapprove a request
-	@app.route("/api/v1/users/requests/<int:id>/dissaprove", methods=["PUT"])
+	@app.route("/api/v1/requests/<int:id>/dissaprove", methods=["PUT"])
 	def disapprove_request(id):
 		pass
 
 	# Resolve a request
-	@app.route("/api/v1/users/requests/<int:id>/resolve", methods=["PUT"])
+	@app.route("/api/v1/requests/<int:id>/resolve", methods=["PUT"])
 	def resolve_request(id):
 		pass
 
