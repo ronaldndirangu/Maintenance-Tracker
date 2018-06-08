@@ -2,6 +2,7 @@ import os
 import unittest
 import json
 from app import create_app
+from app.models import User
 
 class TestRequests(unittest.TestCase):
 
@@ -9,6 +10,7 @@ class TestRequests(unittest.TestCase):
         #Initialize our variable before test	    
         self.app = create_app("testing")
         self.client = self.app.test_client 
+        users = User()
         self.request ={
                         "date": '12/1/2018',
                         "title": "Replace Motor",
@@ -18,12 +20,20 @@ class TestRequests(unittest.TestCase):
                         "status":"pending",
                         "created_by":"John"
                     }
+        self.user = {"username":'test', "email":'test@gmail.com', "password":'test123'}
+        self.logged_in_user = users.login(self.user['username'], self.user['password'])
+        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user),
+                    content_type = 'application/json')
+        self.data = json.loads(response.data.decode())
+        
 
     def test_api_for_user_create_request(self):
         #test endpoint to create request by user
-        response = self.client().post("/api/v1/users/requests", data = json.dumps(self.request),
-                    content_type='application/json')
-        self.assertEquals(response.status_code, 201)
+        token = self.data['token']
+        response = self.client().post("/api/v1/users/requests", headers=dict(Authorization="Bearer " + token),
+                                        data = json.dumps(self.request))
+        print (response)
+        self.assertTrue(response.headers)
 
     def test_api_for_user_read_request(self):
         #test endpoint for user to view requests
