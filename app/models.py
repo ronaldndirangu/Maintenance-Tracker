@@ -108,3 +108,31 @@ class Request:
             requests.append(dict(zip(columns, request)))
         return requests
         
+    def get_status(self, id):
+        cur = conn.cursor()
+        cur.execute("SELECT request_status FROM requests WHERE request_id = (%s)", [id])
+        status = []
+        for s in cur.fetchall():
+            status.append(s)
+        return status
+
+    def approve(self, id):
+        cur = conn.cursor()
+        sql = "UPDATE requests SET request_status=(%s) WHERE request_id=(%s)"
+        data = ("Approved", id)
+        cur.execute(sql, data)
+        return {'message':'request approved'}
+
+    def disapprove(self, id):
+        cur = conn.cursor()
+        sql = "UPDATE requests SET request_status=(%s) WHERE request_id=(%s)"
+        data = ('Disapproved', id)
+        cur.execute(sql, data)
+        return {'message':'request rejected'}
+
+    def resolve(self, id):
+        cur = conn.cursor()
+        sql = "UPDATE requests SET request_status=(%s) WHERE request_id=(%s)"
+        data = ('Resolved', id)
+        cur.execute(sql, data)
+        return {'message':'request resolved'}

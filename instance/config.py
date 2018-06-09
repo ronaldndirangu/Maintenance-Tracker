@@ -8,7 +8,6 @@ class Config(object):
     """Base config class"""
     DEBUG = False
     CSRF_ENABLED = True
-    SECRETE = os.getenv('SECRET')
 
 
 class DevConfig(Config):

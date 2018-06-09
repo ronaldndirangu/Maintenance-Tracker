@@ -51,12 +51,9 @@ def create_app(config_name):
 			return jsonify({'message':'User created successfully'}), 201
 
 	#User can login using email and password
-	@app.route("/api/v1/users/login", methods=["GET"])
+	@app.route("/api/v1/users/login", methods=["POST"])
 	def login():
-		if request.authorization:
-			username = request.authorization["username"]
-			password = request.authorization["password"]
-		elif request.json:
+		if request.json:
 			username = request.json["username"]
 			password = request.json["password"]
 		
@@ -123,7 +120,7 @@ def create_app(config_name):
 	#Admin can view all requests
 	@app.route("/api/v1/requests")
 	@login_required
-	def get_admin_requests(current_user_id):
+	def get_all_requests(current_user_id):
 		if Users.get_role(current_user_id):
 			req = Requests.get_all_requests()
 			if req[0]:
@@ -134,16 +131,34 @@ def create_app(config_name):
 	# Approve a request
 	@app.route("/api/v1/requests/<int:id>/approve", methods=["PUT"])
 	def approve_request(id):
-		pass
+		status_list = Requests.get_status(id)
+		status = status_list[0][0]
+		print (status)
+		if status == "Pending":
+			message = Requests.approve(id)
+			return jsonify(message)
+		return jsonify({'message':'Request has already been reviewed'})
 
 	# Dissapprove a request
-	@app.route("/api/v1/requests/<int:id>/dissaprove", methods=["PUT"])
+	@app.route("/api/v1/requests/<int:id>/disapprove", methods=["PUT"])
 	def disapprove_request(id):
-		pass
+		status_list = Requests.get_status(id)
+		status = status_list[0][0]
+		print (status)
+		if status == "Pending":
+			message = Requests.disapprove(id)
+			return jsonify(message)
+		return jsonify({'message':'Request has already been reviewed'})
 
 	# Resolve a request
 	@app.route("/api/v1/requests/<int:id>/resolve", methods=["PUT"])
 	def resolve_request(id):
-		pass
+		status_list = Requests.get_status(id)
+		status = status_list[0][0]
+		print (status)
+		if status == "Pending":
+			message = Requests.resolve(id)
+			return jsonify(message)
+		return jsonify({'message':'Request has already been reviewed'})
 
 	return app
