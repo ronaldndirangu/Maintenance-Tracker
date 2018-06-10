@@ -97,9 +97,13 @@ def create_app(config_name):
 			"request_status":request.json['request_status'],
 			"requester_id":current_user_id
 		}
-		
+		requests = Requests.get_user_requests(current_user_id)
+		titles = [request['request_title'] for request  in requests]
+		desc = [request['request_description'] for request  in requests]
+		if req['request_title'] in titles and req['request_description'] in desc:
+			return jsonify({'message':'Failed, Request already made'}), 201
 		Requests.create_request(req['request_title'], req['request_description'], req['request_location'], 
-								req['request_priority'], req['request_status'],	req['requester_id'])
+									req['request_priority'], req['request_status'],	req['requester_id'])
 		return jsonify({'message':'Request created successfully'}), 201
 
 	#View user requests for logged in user
