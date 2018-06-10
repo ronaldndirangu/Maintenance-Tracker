@@ -1,15 +1,15 @@
 from flask import Flask, Response, abort, request, jsonify, make_response
 import json
 from instance.config import app_config, SECRET_KEY
-from app.models import User
+from app.models import User, Request
 import jwt
 import datetime
 from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 Users= User()
-users=[]
-requests = []
+Requests= Request()
 
 # define create_app to create and return Flask app
 def create_app(config_name):
@@ -25,122 +25,188 @@ def create_app(config_name):
 			if 'x-access-token' in request.headers:
 				token = request.headers['x-access-token']
 			
+			else:
+				token = request.headers.get('token') 
+			
 			if not token:
 				return jsonify({'message':'token is missing'}), 401
 			
 			try:
 				data = jwt.decode(token, SECRET_KEY)
-				users = Users.get_user(data['user_id'])
-				for user in users:
-					current_user = jsonify(user)
-					return current_user
+				kwargs['current_user_id']=data['user_id']
 			except:
 				return jsonify({'message':'Invalid token'}), 401
-			return f(current_user, *args, **kwargs)
+			return f(*args, **kwargs)
 		return decorated
 
 
 	#Sign up user
-	@app.route("/api/v1/users/signup", methods=["POST"])
+	@app.route("/api/v1/auth/signup", methods=["POST"])
 	def signup():
 		if request.json:
 			new_user = {
 						"username":request.json['username'],
 						"email":request.json['email'],
-						"password":request.json['password']
+						"password":request.json['password'],
+						"role":request.json['role']
 					}
-			Users.create_user(new_user['username'], new_user['email'], new_user['password'])
+					
+			users = Users.get_all_users()
+			all_users = []
+			for user in users:
+				all_users.append(user[0])
+			if new_user['username'] in all_users:
+				return jsonify({'message':'user already registered'}), 201
+
+			if len(request.json['password'])<6:
+				return jsonify({'message': 'Password should be atleast 6 characters'})
+			elif '@' not in request.json['email']:
+				return jsonify({'message':'Enter valid email'})
+
+			hashed_pswd = generate_password_hash(new_user['password'])
+
+			Users.create_user(new_user['username'], new_user['email'], hashed_pswd, new_user['role'])
 			return jsonify({'message':'User created successfully'}), 201
 
 	#User can login using email and password
-	@app.route("/api/v1/users/login", methods=["GET"])
+	@app.route("/api/v1/auth/login", methods=["POST"])
 	def login():
-		if request.authorization:
-			username = request.authorization["username"]
-			password = request.authorization["password"]
-		elif request.json:
-			username = request.json["username"]
+		if request.json:
+			username = request.json["username"]			
 			password = request.json["password"]
 		
 		users = Users.login(username, password)
 		if users:
 			for user in users:
-				if user['username'] == username and user['password'] == password:
+				if user['username'] == username and check_password_hash(user['password'], password):
 					token = jwt.encode({"user_id" : user['user_id'], 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, SECRET_KEY)
-					return jsonify({'token':token.decode('UTF-8')}), 200
+					return jsonify({'token':token.decode('UTF-8')}), 201
 		return jsonify({"message":"no valid user"}), 401
 
 	# Create new request
 	@app.route("/api/v1/users/requests", methods=["POST"])
 	@login_required
-	def create_request(current_user):
+	def create_request(current_user_id):
 		if not request.json:
-			abort(400)
-		new_req = {
-			"request_id":len(requests)+1,
-			"date":request.json['date'],
-			"title":request.json['title'],
-			"location":request.json['location'],
-			"priority":request.json['priority'],
-			"description":request.json['description'],
-			"status":request.json['status'],
-			"created_by":request.json['created_by']
+			abort(404)		
+		req = {
+			"request_title":request.json['request_title'],
+			"request_description":request.json['request_description'],
+			"request_location":request.json['request_location'],
+			"request_priority":request.json['request_priority'],			
+			"request_status":request.json['request_status'],
+			"requester_id":current_user_id
 		}
-		requests.append(new_req)
-		return jsonify(new_req),201
+		requests = Requests.get_user_requests(current_user_id)
+		titles = [request['request_title'] for request  in requests]
+		desc = [request['request_description'] for request  in requests]
+		if req['request_title'] in titles and req['request_description'] in desc:
+			return jsonify({'message':'Failed, Request already made'}), 201
+		Requests.create_request(req['request_title'], req['request_description'], req['request_location'], 
+									req['request_priority'], req['request_status'],	req['requester_id'])
+		return jsonify({'message':'Request created successfully'}), 201
 
 	#View user requests for logged in user
 	@app.route("/api/v1/users/requests", methods=["GET"])
-	def user_requests():
-		logged_in_user = 'John'
-		user_req=[]
-		for req in requests:
-			if req["created_by"]==logged_in_user:
-				user_req.append(req)
-		user_requests = json.dumps(user_req)
-		resp = Response(user_requests, status=200, mimetype='application/json')
-		return resp
-
+	@login_required
+	def user_requests(current_user_id):
+		user_req = Requests.get_user_requests(current_user_id)
+		return jsonify(user_req), 200
+		
 
 	#View a specific request
 	@app.route("/api/v1/users/requests/<int:id>", methods=["GET"])
-	def get_request(id):
-		logged_in_user = 'John'
-		user_req=[]
-		for req in requests:
-			if req["created_by"]==logged_in_user and int(req["request_id"])==id:
-				user_req.append(req)
-		user_request = json.dumps(user_req)
-		resp = Response(user_request, status=200, mimetype="application/json")
-		return resp
+	@login_required
+	def get_request(current_user_id, id):
+		req_id = int(id)
+		request = Requests.get_a_request(req_id)
+		if request:
+			if request[0]['requester_id'] == current_user_id:
+				return jsonify(request), 200
+			return jsonify({'message':'Not authorized to view request'})
+		return jsonify({'message':'Request not found'}), 200
 
 	# Update a specific request
 	@app.route("/api/v1/users/requests/<int:id>", methods=["PUT"])
-	def update_request(id):
-		update_request = [request for request in requests if int(request['id'])==id]
-		if len(update_request) == 0:
-			abort(404)
+	@login_required
+	def update_request(current_user_id, id):
 		if not request.json:
-			abort(400)  
+			abort(404)
+		title = request.json['request_title']
+		description = request.json['request_description']
+		priority = request.json['request_priority']
+		message = Requests.update_a_request(id, title, description, priority)
+		if message:
+			return jsonify(message), 201
+		else:
+			return ({'message':'update failed'})
 
-		update_request['title'] = request.json.get('title', update_request['title'])
-		update_request['description'] = request.json.get('description', update_request['description'])
-		update_request['type'] = request.json.get('type', update_request['type'])
-		return jsonify({'update_request': update_request}), 201
+	#Delete a specific request
+	@app.route("/api/v1/users/requests/<int:id>", methods=["DELETE"])
+	@login_required
+	def delete_request(current_user_id, id):
+		req = Requests.get_a_request(int(id))
+		if len(req)<1:
+			return jsonify({'message':'request not found'})
+		else:
+			del_id = int(id)
+			message = Requests.delete_a_request(del_id)
+			print (message)
+			if message:
+				return jsonify(message), 200
+			else:
+				return jsonify({'message':'deleting failed'})
 
-	# Update a specific request
-	@app.route("/api/v1/users/requests/<int:id>/approve", methods=["PUT"])
-	def approve_request(id):
-		pass
+	#Admin can view all requests
+	@app.route("/api/v1/requests")
+	@login_required
+	def get_all_requests(current_user_id):
+		if Users.get_role(current_user_id)[0][0]:
+			req = Requests.get_all_requests()
+			if req[0]:
+				return jsonify(req), 200
+			return jsonify({'message':'no requests found'})
+		return jsonify({'message':'Only allowed for the admin'})
 
-	# Update a specific request
-	@app.route("/api/v1/users/requests/<int:id>/dissaprove", methods=["PUT"])
-	def disapprove_request(id):
-		pass
+	# Approve a request
+	@app.route("/api/v1/requests/<int:id>/approve", methods=["PUT"])
+	@login_required
+	def approve_request(current_user_id, id):
+		if Users.get_role(current_user_id)[0][0]:
+			status_list = Requests.get_status(id)
+			status = status_list[0][0]
+			if status == "Pending":
+				message = Requests.approve(id)
+				return jsonify(message)
+			return jsonify({'message':'Request has already been reviewed'})
+		return jsonify({'message':'Only allowed for the admin'})
 
-	# Update a specific request
-	@app.route("/api/v1/users/requests/<int:id>/resolve", methods=["PUT"])
-	def resolve_request(id):
-		pass
+	# Dissapprove a request
+	@app.route("/api/v1/requests/<int:id>/disapprove", methods=["PUT"])
+	@login_required
+	def disapprove_request(current_user_id, id):
+		if Users.get_role(current_user_id)[0][0]:
+			status_list = Requests.get_status(id)
+			status = status_list[0][0]
+			print (status)
+			if status == "Pending":
+				message = Requests.disapprove(id)
+				return jsonify(message)
+			return jsonify({'message':'Request has already been reviewed'})
+		return jsonify({'message':'Only allowed for the admin'})
+
+	# Resolve a request
+	@app.route("/api/v1/requests/<int:id>/resolve", methods=["PUT"])
+	@login_required
+	def resolve_request(current_user_id, id):
+		if Users.get_role(current_user_id)[0][0]:
+			status_list = Requests.get_status(id)
+			status = status_list[0][0]
+			print (status)
+			if status == "Pending":
+				message = Requests.resolve(id)
+				return jsonify(message)
+			return jsonify({'message':'Request has already been reviewed'})
+		return jsonify({'message':'Only allowed for the admin'})
 
 	return app
