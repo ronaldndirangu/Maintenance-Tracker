@@ -29,7 +29,7 @@ def create_tables():
 
     conn = None
     try:
-        conn = psycopg2.connect(host="localhost", database="postgres", user="postgres", password="postgres")
+        conn = psycopg2.connect(host="localhost", database="maintenancetracker", user="postgres", password="postgres")
         cur = conn.cursor()
 
         for command in commands:
