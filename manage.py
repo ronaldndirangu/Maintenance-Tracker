@@ -1,7 +1,8 @@
 import psycopg2
 
+
 def create_tables():
-    #Create users and requests tables
+    # Create users and requests tables
     commands = (
         """
         CREATE TABLE IF NOT EXISTS users(
@@ -29,12 +30,14 @@ def create_tables():
 
     conn = None
     try:
-        conn = psycopg2.connect(host="localhost", database="maintenancetracker", user="postgres", password="postgres")
+        conn = psycopg2.connect(
+            host="localhost", database="maintenancetracker",
+            user="postgres", password="postgres")
         cur = conn.cursor()
 
         for command in commands:
             cur.execute(command)
-        
+
         cur.close()
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
