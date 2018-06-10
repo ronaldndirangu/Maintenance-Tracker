@@ -1,6 +1,7 @@
 import os
 import unittest
 import json
+from instance.config import SECRET_KEY
 from app import create_app
 from app.models import User
 
@@ -9,52 +10,68 @@ class TestRequests(unittest.TestCase):
     def setUp(self):
         #Initialize our variable before test	    
         self.app = create_app("testing")
-        self.client = self.app.test_client 
-        users = User()
+        self.client = self.app.test_client
         self.request ={
-                        "date": '12/1/2018',
-                        "title": "Replace Motor",
-                        "location": "Liquid Plant",
-                        "priority":"High",
-                        "description": "Motor overheating due to unbalanced windings",
-                        "status":"pending",
-                        "created_by":"John"
+                        "request_title":"Test_update request",
+                        "request_description":"Testing_update request",
+                        "request_location":"Test locationn",
+                        "request_priority":"High",			
+                        "request_status":"Pending"
                     }
-        self.user = {"username":'test', "email":'test@gmail.com', "password":'test123'}
-        self.logged_in_user = users.login(self.user['username'], self.user['password'])
-        response = self.client().get('/api/v1/users/login', data = json.dumps(self.user),
-                    content_type = 'application/json')
-        self.data = json.loads(response.data.decode())
+        self.user = {"username":'test', "email":'test@gmail.com', "password":'test123', 'role':False}
+        #Create test user
+        response = self.client().post('/api/v1/auth/signup', data = json.dumps(self.user),
+                                       content_type = 'application/json')
+        self.assertEquals(response.status_code, 201)
         
+        #Login test user created
+        response = self.client().post('/api/v1/auth/login', data = json.dumps(self.user),
+                                        content_type = 'application/json')
+        data = json.loads(response.data.decode())
+            
+        self.assertTrue(data['token'])
+        self.assertEquals(response.status_code, 201)
+
+        self.headers = {'token': data['token']}
+            
+        #Create user request
+        response = self.client().post('/api/v1/users/requests', data = json.dumps(self.request),
+                                        headers=self.headers, content_type = 'application/json')
+        self.assertEquals(response.status_code, 201)
+
+        #create request
+        response = self.client().post("/api/v1/users/requests", data = json.dumps(self.request),
+                                    headers=self.headers, content_type='application/json')
+        self.assertEquals(response.status_code, 201)
 
     def test_api_for_user_create_request(self):
-        #test endpoint to create request by user
-        token = self.data['token']
-        response = self.client().post("/api/v1/users/requests", headers=dict(Authorization="Bearer " + token),
-                                        data = json.dumps(self.request))
-        print (response)
-        self.assertTrue(response.headers)
+        response = self.client().post("/api/v1/users/requests", data = json.dumps(self.request),
+                                    headers=self.headers, content_type='application/json')
+        print(self.headers['token'])
+        self.assertEquals(response.status_code, 201)
 
-    def test_api_for_user_read_request(self):
+    def test_api_for_user_read_all_request(self):
         #test endpoint for user to view requests
-        response = self.client().get('/api/v1/users/requests')
-        self.assertEquals(response.status_code,200)
+        response = self.client().get("/api/v1/users/requests", headers=self.headers)
+        print(self.headers['token'])
+        self.assertEquals(response.status_code, 200)
 
     def test_api_to_view_a_request(self):
         #test api to view request
-        response = self.client().get('/api/v1/users/requests/1')
+        response = self.client().get("/api/v1/users/requests/1", headers=self.headers)
+        print(self.headers['token'])
         self.assertEquals(response.status_code, 200)
 
     def test_api_to_update_a_request(self):
         #test api to update a request
-        response = self.client().put("/api/v1/users/requests", data = json.dumps(self.request),
-                    content_type='application/json')
-        self.assertTrue(response.status_code)
+        response = self.client().put("/api/v1/users/requests/1", data = json.dumps(self.request),
+                                       headers=self.headers, content_type='application/json')
+        self.assertEquals(response.status_code, 201)
 
     def test_api_to_delete_a_request(self):
         #test api to delete a request
-        response = self.client().delete('/api/v1/users/requests/1')
-        self.assertTrue(response.status_code)
+        response = self.client().delete('/api/v1/users/requests/1', headers=self.headers)
+        self.assertEquals(response.status_code, 200)
 
 
 if __name__ == "__main__":

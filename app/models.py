@@ -47,6 +47,15 @@ class User():
             roles.append(role)
         return roles
 
+    def get_all_users(self):
+        cur = conn.cursor()
+        cur.execute("SELECT username FROM users")
+        users = []
+        for user in cur.fetchall():
+            users.append(user)
+        return users
+
+
 class Request:
 
     def __init__(self):
@@ -97,6 +106,12 @@ class Request:
         data = (title, description, priority, id)
         cur.execute(sql, data)
         return {'message':'request updated successfully'}
+
+    def delete_a_request(self, id):
+        cur = conn.cursor()
+        cur.execute("DELETE from requests WHERE request_id=(%s)", [id])
+        conn.commit()
+        return {'message':'request deleted'}
 
     def get_all_requests(self):
         cur = conn.cursor()
