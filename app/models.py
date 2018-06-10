@@ -3,7 +3,7 @@ import datetime
 from flask import jsonify
 from instance.config import SECRET_KEY
 
-conn = psycopg2.connect(host="localhost", database="postgres", user="postgres", password="postgres")
+conn = psycopg2.connect(host="localhost", database="maintenancetracker", user="postgres", password="postgres")
 
 
 class User():
