@@ -1,11 +1,12 @@
 import psycopg2
 import datetime
+import os
 from flask import jsonify
 from instance.config import SECRET_KEY
 
 conn = psycopg2.connect(
-    host="localhost", database="maintenancetracker",
-    user="postgres", password="postgres")
+    host=os.getenv("HOST"), database=os.getenv("DATABASE"),
+    user=os.getenv("USER"), password=os.getenv("PASSWORD"))
 
 
 class User():
