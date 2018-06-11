@@ -182,7 +182,7 @@ def create_app(config_name):
             status = status_list[0][0]
             if status == "Pending":
                 message = Requests.approve(id)
-                return jsonify(message)
+                return jsonify(message), 201
             return jsonify({'message': 'Request has already been reviewed'})
         return jsonify({'message': 'Only allowed for the admin'})
 
@@ -196,7 +196,7 @@ def create_app(config_name):
             print (status)
             if status == "Pending":
                 message = Requests.disapprove(id)
-                return jsonify(message)
+                return jsonify(message), 201
             return jsonify({'message': 'Request has already been reviewed'})
         return jsonify({'message': 'Only allowed for the admin'})
 
@@ -210,7 +210,7 @@ def create_app(config_name):
             print (status)
             if status == "Pending":
                 message = Requests.resolve(id)
-                return jsonify(message)
+                return jsonify(message), 201
             return jsonify({'message': 'Request has already been reviewed'})
         return jsonify({'message': 'Only allowed for the admin'})
 
