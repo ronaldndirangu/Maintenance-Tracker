@@ -1,4 +1,4 @@
-from flask import Flask, Response, abort, request, jsonify, make_response
+from flask import Flask, abort, request, jsonify
 import json
 from instance.config import app_config, SECRET_KEY
 from app.models import User, Request
@@ -60,14 +60,16 @@ def create_app(config_name):
                 return jsonify({'message': 'user already registered'}), 201
 
             if len(request.json['password']) < 6:
-                return jsonify({'message': 'Password should be atleast 6 characters'})
+                return jsonify({'message':
+                                'Password should be atleast 6 characters'})
             elif '@' not in request.json['email']:
                 return jsonify({'message': 'Enter valid email'})
 
             hashed_pswd = generate_password_hash(new_user['password'])
 
             Users.create_user(
-                new_user['username'], new_user['email'], hashed_pswd, new_user['role'])
+                new_user['username'], new_user['email'],
+                hashed_pswd, new_user['role'])
             return jsonify({'message': 'User created successfully'}), 201
 
     # User can login using email and password
