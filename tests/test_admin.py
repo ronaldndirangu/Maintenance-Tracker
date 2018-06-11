@@ -47,13 +47,18 @@ class TestRequests(unittest.TestCase):
                                  headers=self.headers)
     self.assertEquals(response.status_code, 200)
 
+  def test_admin_can_approve_request(self):
+    response = self.client().put('/api/v2/requests/1/approve',
+                                 headers=self.headers)
+    self.assertEquals(response.status_code, 201)
+
   def test_admin_can_disapprove_request(self):
-    response = self.client().put('/api/v2/requests/3/disapprove',
+    response = self.client().put('/api/v2/requests/1/disapprove',
                                  headers=self.headers)
     self.assertEquals(response.status_code, 201)
 
   def test_admin_can_resolve_request(self):
-    response = self.client().put('/api/v2/requests/3/resolve',
+    response = self.client().put('/api/v2/requests/1/resolve',
                                  headers=self.headers)
     self.assertEquals(response.status_code, 200)
 
