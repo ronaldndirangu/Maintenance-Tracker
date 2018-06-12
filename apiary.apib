@@ -1,0 +1,279 @@
+FORMAT: 1A
+HOST: https://maintenance-tracker-project.herokuapp.com/
+
+# Maintenance Tracker
+
+Maintenance Tracker App is an application that provides users with the ability to reach out to
+operations or repairs department regarding repair or maintenance requests and monitor the
+status of their request.
+
+## Registration of new users [/api/v2/auth/signup]
+
+### Register new users [POST]
+
+You may create a user using this action. It takes a JSON object
+containing a unique username, unique email, a password that is atleast 6 
+characters long and a role that is submitted as false by default to
+indicate the user is not an ADMIN if true then the user is an ADMIN.
+
++ Response 201 (application/json)
+
+        {
+            "username":"johndoe",
+            "email":"johndoe@gmail.com",
+            "password":"123456",
+            "role":false
+        }
+        
+## Sign in users [/api/v2/auth/login]
+
+### Sign in users [POST]
+
+You may sign in using this action. It takes a JSON
+object containing a username and password.
+
++ Request (application/json)
+
+        {
+            "username":"johndoe",
+            "password":"123456"
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+
+    + Body
+
+            {
+                "message":"User logged in",
+                "token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            }
+            
+## Requests collection [/api/v2/users/requests]
+
+### Create request [POST]
+
+You may create a request using this action. It takes a json object containing
+request title, data, description, location, status, priority, requester id.
+Authorization headers are required.
+
++ Request (application/json)
+
+        {
+            "request_title":"sample title",
+            "request_description":"sample description",
+            "request_location":"sample location",
+            "request_priority":"high",
+            "request_status":"pending"
+        }
+            
++ Response 201 (application/json)
+    
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            
+    + Body
+    
+            {
+                "message":"Request created successfully"
+            }
+
+### View all user requests [GET]
+
+You may view all signed user requests. Authorization headers are required.
+
++ Response 200 (application/json)
+
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            
+    + Body
+
+            [
+                {
+                    "request_title":"sample title",
+                    "request_description":"sample description",
+                    "request_location":"sample location",
+                    "request_priority":"high",
+                    "request_status":"pending"
+                },
+                {
+                    "request_title":"sample2 title",
+                    "request_description":"sample2 description",
+                    "request_location":"sample2 location",
+                    "request_priority":"low",
+                    "request_status":"approved"
+                },
+            ]
+                
+## User request collection [/api/v2/requests/<requestid>]
+
+### Update a specific user request [PUT]
+
+You may update an existing user request by providing the new title, new
+description or new status. Authorization headers are required for user to
+view his requests.
+
++ Request (application/json)
+
+        {
+            "request_title":"new title",
+            "request_description":"new description",
+            "request_status":"new status"
+        }
+        
++ Response 201 (application/json)
+
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            
+    + Body
+
+            {
+                "message":"request updated successfully"
+            }
+        
+### View a specific request [GET]
+
+You may view a specific request for the authorized user. User can only
+view a request he/she created. Authorization headers are required.
+
++ Response 200 (application/json)
+    
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            
+    + Body    
+
+            {
+                "request_date": "Sun, 10 Jun 2018 19:46:04 GMT",
+                "request_description": "Sample request",
+                "request_id": 2,
+                "request_location": "Sample locationn",
+                "request_priority": "High",
+                "request_status": "Pending",
+                "request_title": "Sample request",
+                "requester_id": 1
+            }
+        
+### Delete a specific request [DELETE]
+
+You may delete a specific request for the signed in user. Authorization
+headers are required.
+
++ Response 200 (application/json)
+
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            
+    + Body
+
+            {
+                "message":"request deleted"
+            }
+        
+## Admin view all requests [/api/v2/requests]
+
+You may view all requests made by all users. You require to be an admin 
+to do this. Authorization headers are required.
+
+### Admin can view all requests [GET]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            
+    + Body
+
+            [
+                {
+                    "request_date": "Sun, 10 Jun 2018 19:46:04 GMT",
+                    "request_description": "Sample request",
+                    "request_id": 2,
+                    "request_location": "Sample locationn",
+                    "request_priority": "High",
+                    "request_status": "Pending",
+                    "request_title": "Sample request",
+                    "requester_id": 1
+                },
+                {
+                    "request_date": "Mon, 11 Jun 2018 20:46:04 GMT",
+                    "request_description": "Sample2 request",
+                    "request_id": 3,
+                    "request_location": "Sample2 locationn",
+                    "request_priority": "Low",
+                    "request_status": "Approved",
+                    "request_title": "Sample2 request",
+                    "requester_id": 3
+                },
+            ]
+            
+## Admin can approve a request [/api/v2/requests/approve]
+
+You may user this action to approve a request. The request staus 
+must be pending for this to work. You also must be logged in as an
+ADMIN. Authorization headers are required
+
+### Admin can approve a request [PUT]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            
+    + Body
+
+            {
+                "message":"request approved"
+            }
+
+## Admin can approve a request [/api/v2/requests/disapprove]
+
+You may user this action to disapprove a request. The request staus 
+must be pending for this to work. You also must be logged in as an
+ADMIN. Authorization headers are required
+
+### Admin can approve a request [PUT]
+
++ Response 200 (application/json)
+    
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            
+    + Body
+
+            {
+                "message":"request rejected"
+            }
+        
+## Admin can approve a request [/api/v2/requests/resolve]
+
+You may user this action to resolve a request. The request staus 
+must be pending for this to work. You also must be logged in as an
+ADMIN. Authorization headers are required
+
+### Admin can approve a request [PUT]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            x-access-token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUyMDgyOTUsImlhdCI6MTQ4NTIwODI5MCwic3ViIjoxfQ.D9annoyh-VwpI5RY3blaSBX4pzK5UJi1H9dmKg2DeLQ"
+            
+    + Body
+
+            {
+                "message":"request resolved"
+            }
