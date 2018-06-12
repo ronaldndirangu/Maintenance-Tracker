@@ -5,10 +5,7 @@ python:
 install:
   - pip install -r requirements.txt
 env:
-  - HOST=localhost
-  - DATABASE=maintenancetracker
-  - USER=postgres
-  - PASSWORD=postgres
+  - HOST=localhost DATABASE=maintenancetracker USER=postgres PASSWORD=postgres
 services:
   - postgresql
 before_script:
