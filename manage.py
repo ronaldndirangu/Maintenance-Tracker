@@ -1,3 +1,4 @@
+import os
 import psycopg2
 
 
@@ -31,8 +32,8 @@ def create_tables():
     conn = None
     try:
         conn = psycopg2.connect(
-            host="localhost", database="maintenancetracker",
-            user="postgres", password="postgres")
+            host=os.getenv("HOST"), database=os.getenv("DATABASE"),
+            user=os.getenv("USER"), password=os.getenv("PASSWORD"))
         cur = conn.cursor()
 
         for command in commands:
