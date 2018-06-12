@@ -51,6 +51,23 @@ On your shell run
 ```bash
   pip install -r requirements.txt
 ```
+### Setting up database environment
+```bash
+  $export HOST=hostname
+```
+```bash
+  $export DATABASE=dbname
+```
+```bash
+  $export USER=dbuser
+```
+```bash
+  $export PASSWORD=dbuser_password
+```
+### Setting up database tables
+```bash
+  $python3 manage.py
+```
 ### Running the application
 ```bash
   python3 run.py
@@ -58,19 +75,23 @@ On your shell run
 ### Endpoints
 All endpoints can be accessed using the following url using curl or postman
 ```bash
-  http://127.0.0.1/api/v1/
+  http://127.0.0.1/api/v2/
 ```
 Below are the available endpoints
 
 Endpoint | Task
 ------------ | -------------
-POST /api/v1/users/login | User can login to the application
-POST /api/v1/users/signup | User can signup for the application
-POST /api/v1/users/request/ | User can create a request
-GET /api/v1/users/request | User can view his/her requests
-PUT /api/v1/users/request/<requestid> | User can edit a specific request
-GET /api/v1/users/request/<requestid> | User view a specific request
-DELETE /api/v1/users/request/<requestid> | User can delete a specific request
+POST /api/v2/auth/login | User can login to the application
+POST /api/v2/auth/signup | User can signup for the application
+POST /api/v2/users/request/ | User can create a request
+GET /api/v2/users/request | User can view his/her requests
+PUT /api/v2/users/request/<requestid> | User can edit a specific request
+GET /api/v2/users/request/<requestid> | User view a specific request
+DELETE /api/v2/users/request/<requestid> | User can delete a specific request
+GET /api/v2/requests | Admin can view all requests made
+PUT /api/v2/users/request/<requestid>/approve | Admin can approve a request
+PUT /api/v2/users/request/<requestid>/disapprove | Admin can disapprove a request
+PUT /api/v2/users/request/<requestid>/reslove | Admin can resolve a request
   
 ### Testing
 To test the application run the following command on your shell
