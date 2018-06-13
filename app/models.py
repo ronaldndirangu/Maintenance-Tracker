@@ -1,19 +1,18 @@
 import os
 import psycopg2
 import datetime
-from flask import jsonify
-from instance.config import SECRET_KEY
+
 
 conn = psycopg2.connect(
-            host=os.getenv("HOST"), database=os.getenv("DATABASE"),
-            user=os.getenv("USER"), password=os.getenv("PASSWORD"))
+    host=os.getenv("HOST"), database=os.getenv("DATABASE"),
+    user=os.getenv("USER"), password=os.getenv("PASSWORD"))
 
 
 class User():
     def __init__(self):
         pass
 
-    def create_user(self, username, email, password, role):
+    def create_user(self, username, email, password, role=False):
         cur = conn.cursor()
         sql = "INSERT INTO users (username, email, password, role)\
                             VALUES (%s, %s, %s, %s)"
@@ -23,6 +22,23 @@ class User():
         conn.commit()
         cur.close()
         print ("New user added to user table")
+
+    def show_users(self):
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users;")
+        columns = ('user_id', 'username', 'email', 'password', 'role')
+        users = []
+        for user in cur.fetchall():
+            users.append(dict(zip(columns, user)))
+        return users
+
+    def promote_user(self, id):
+        cur = conn.cursor()
+        role = True
+        sql = "UPDATE users SET role=(%s) WHERE user_id=(%s);"
+        data = (role, id)
+        cur.execute(sql, data)
+        return ({"message": "User updated"})
 
     def login(self, name, pswd):
         cur = conn.cursor()
@@ -68,8 +84,9 @@ class Request:
                        request_location, request_priority, request_status,
                        requester_id):
         cur = conn.cursor()
-        sql = "INSERT INTO requests(request_date, request_title, request_description, request_location,\
-                                    request_priority, request_status, requester_id)\
+        sql = "INSERT INTO requests(request_date, request_title, request_description,\
+                                    request_location, request_priority,\
+                                     request_status, requester_id)\
                             VALUES (%s, %s, %s, %s, %s, %s, %s);"
         date = datetime.datetime.now()
         data = (date, request_title, request_description, request_location,

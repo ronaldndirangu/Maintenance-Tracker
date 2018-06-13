@@ -48,8 +48,7 @@ def create_app(config_name):
             new_user = {
                 "username": request.json['username'],
                 "email": request.json['email'],
-                "password": request.json['password'],
-                "role": request.json['role']
+                "password": request.json['password']
             }
 
             users = Users.get_all_users()
@@ -69,7 +68,7 @@ def create_app(config_name):
 
             Users.create_user(
                 new_user['username'], new_user['email'],
-                hashed_pswd, new_user['role'])
+                hashed_pswd)
             return jsonify({'message': 'User created successfully'}), 201
 
     # User can login using email and password
@@ -168,7 +167,8 @@ def create_app(config_name):
     def get_all_requests(current_user_id):
         if Users.get_role(current_user_id)[0][0]:
             req = Requests.get_all_requests()
-            if req[0]:
+            print (req)
+            if len(req) > 0:
                 return jsonify(req), 200
             return jsonify({'message': 'no requests found'})
         return jsonify({'message': 'Only allowed for the admin'})
@@ -182,7 +182,7 @@ def create_app(config_name):
             status = status_list[0][0]
             if status == "Pending":
                 message = Requests.approve(id)
-                return jsonify(message), 201
+                return jsonify(message), 200
             return jsonify({'message': 'Request has already been reviewed'})
         return jsonify({'message': 'Only allowed for the admin'})
 
@@ -213,5 +213,25 @@ def create_app(config_name):
                 return jsonify(message), 201
             return jsonify({'message': 'Request has already been reviewed'})
         return jsonify({'message': 'Only allowed for the admin'})
+
+    # Promote user to admin
+    @app.route("/api/v2/users/<userid>/promote", methods=["PUT"])
+    @login_required
+    def promote_user(current_user_id, userid):
+        if Users.get_role(current_user_id)[0][0]:
+            Users.promote_user(userid)
+            return jsonify({"message": "User updated"}), 200
+        else:
+            return jsonify({"message": "Only allowed for the admin"}), 200
+
+    # View all users
+    @app.route("/api/v2/users", methods=["GET"])
+    @login_required
+    def get_users(current_user_id):
+        if Users.get_role(current_user_id)[0][0]:
+            users = Users.show_users()
+            return jsonify(users), 200
+        else:
+            return jsonify({"message": "Only allowed for the admin"}), 200
 
     return app
