@@ -16,7 +16,7 @@ class TestRequests(unittest.TestCase):
         "request_priority": "High",
         "request_status": "Pending"
     }
-    self.user = {"username": 'admim', "email": 'admin@gmail.com',
+    self.user = {"username": 'admin', "email": 'admin@gmail.com',
                  "password": 'admin123', 'role': True}
     # Create test user
     response = self.client().post('/api/v2/auth/signup',
@@ -62,6 +62,16 @@ class TestRequests(unittest.TestCase):
                                  headers=self.headers)
     self.assertEquals(response.status_code, 200)
 
+  def test_admin_promote_user(self):
+    response = self.client().put('/api/v2/users/1/promote',
+                                 headers=self.headers)
+    self.assertEquals(response.status_code, 200)
+
+  def test_admin_view_all_users(self):
+    response = self.client().get('/api/v2/users',
+                                 headers=self.headers)
+    self.assertEquals(response.status_code, 200)
+
 
 if __name__ == "__main__":
-    unittest.main()
+  unittest.main()

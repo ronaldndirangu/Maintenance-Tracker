@@ -11,12 +11,12 @@ class TestRequests(unittest.TestCase):
         self.app = create_app('testing')
         self.client = self.app.test_client
         self.user = {"username": 'test', "email": 'test@gmail.com',
-                     "password": 'test123', "role": False}
+                     "password": 'test123'}
         self.user2 = {"username": 'test', "password": 'wrong'}
         self.user3 = {"username": "test2", "email": "test2@gmail.com",
-                      "password": "1234", "role": False}
+                      "password": "1234"}
         self.user4 = {"username": "test3", "email": "test23.com",
-                      "password": "123456", "role": False}
+                      "password": "123456"}
 
     def test_user_signup(self):
         # test api for user signup unsuccessful

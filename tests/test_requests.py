@@ -17,7 +17,7 @@ class TestRequests(unittest.TestCase):
                 "request_status": "Pending"
             }
             self.user = {"username": 'test', "email": 'test@gmail.com',
-                         "password": 'test123', 'role': False}
+                         "password": 'test123'}
             # Create test user
             response = self.client().post('/api/v2/auth/signup',
                                           data=json.dumps(self.user),
