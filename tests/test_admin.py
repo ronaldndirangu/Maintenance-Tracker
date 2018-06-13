@@ -50,7 +50,7 @@ class TestRequests(unittest.TestCase):
   def test_admin_can_approve_request(self):
     response = self.client().put('/api/v2/requests/1/approve',
                                  headers=self.headers)
-    self.assertEquals(response.status_code, 201)
+    self.assertEquals(response.status_code, 200)
 
   def test_admin_can_disapprove_request(self):
     response = self.client().put('/api/v2/requests/1/disapprove',
