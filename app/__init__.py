@@ -1,5 +1,4 @@
 from flask import Flask, abort, request, jsonify
-import json
 from instance.config import app_config, SECRET_KEY
 from app.models import User, Request
 import jwt
