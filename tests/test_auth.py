@@ -31,7 +31,7 @@ class TestRequests(unittest.TestCase):
                                       data=json.dumps(self.user),
                                       content_type='application/json')
         data = json.loads(response.data.decode())
-        self.assertTrue(data["token"])
+        self.assertTrue(data[0]["token"])
 
     def test_invalid_user_login(self):
         # test api for user login unsuccessful

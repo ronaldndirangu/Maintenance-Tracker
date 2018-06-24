@@ -30,10 +30,10 @@ class TestRequests(unittest.TestCase):
                                           content_type='application/json')
             data = json.loads(response.data.decode())
 
-            self.assertTrue(data['token'])
+            self.assertTrue(data[0]['token'])
             self.assertEquals(response.status_code, 201)
 
-            self.headers = {'token': data['token']}
+            self.headers = {'token': data[0]['token']}
 
             # Create user request
             response = self.client().post('/api/v2/users/requests',
