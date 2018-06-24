@@ -84,7 +84,8 @@ def create_app(config_name):
                 if user['username'] == username and check_password_hash(user['password'], password):
                     token = jwt.encode({"user_id": user['user_id'], 'exp': datetime.datetime.utcnow(
                     ) + datetime.timedelta(minutes=30)}, SECRET_KEY)
-                    return jsonify({'token': token.decode('UTF-8')}), 201
+                    return jsonify({'token': token.decode('UTF-8')},
+                             {'message':'Login successful'}), 201
         return jsonify({"message": "no valid user"}), 401
 
     # Create new request
@@ -125,7 +126,7 @@ def create_app(config_name):
         req_id = int(id)
         request = Requests.get_a_request(req_id)
         if request:
-            if request[0]['requester_id'] == current_user_id:
+            if request[0]['requester_id'] == current_user_id or Users.get_role(current_user_id)[0][0]:
                 return jsonify(request), 200
             return jsonify({'message': 'Not authorized to view request'})
         return jsonify({'message': 'Request not found'}), 200
@@ -138,8 +139,8 @@ def create_app(config_name):
             abort(404)
         title = request.json['request_title']
         description = request.json['request_description']
-        priority = request.json['request_priority']
-        message = Requests.update_a_request(id, title, description, priority)
+        location = request.json['request_location']
+        message = Requests.update_a_request(id, title, description, location)
         if message:
             return jsonify(message), 201
         else:
@@ -179,10 +180,12 @@ def create_app(config_name):
     def approve_request(current_user_id, id):
         if Users.get_role(current_user_id)[0][0]:
             status_list = Requests.get_status(id)
-            status = status_list[0][0]
-            if status == "Pending":
+            status = status_list[0][0].lower()
+            if status == "pending":
                 message = Requests.approve(id)
                 return jsonify(message), 200
+            elif status == 'disapproved':
+                return jsonify({'message':'Request already disapproved'})
             return jsonify({'message': 'Request has already been reviewed'})
         return jsonify({'message': 'Only allowed for the admin'})
 
@@ -192,11 +195,13 @@ def create_app(config_name):
     def disapprove_request(current_user_id, id):
         if Users.get_role(current_user_id)[0][0]:
             status_list = Requests.get_status(id)
-            status = status_list[0][0]
+            status = status_list[0][0].lower()
             print (status)
-            if status == "Pending":
+            if status == "pending":
                 message = Requests.disapprove(id)
                 return jsonify(message), 201
+            elif status == 'approved':
+                return jsonify({'message':'Request already approved'})
             return jsonify({'message': 'Request has already been reviewed'})
         return jsonify({'message': 'Only allowed for the admin'})
 
@@ -206,9 +211,9 @@ def create_app(config_name):
     def resolve_request(current_user_id, id):
         if Users.get_role(current_user_id)[0][0]:
             status_list = Requests.get_status(id)
-            status = status_list[0][0]
+            status = status_list[0][0].lower()
             print (status)
-            if status == "Pending":
+            if status == "approved":
                 message = Requests.resolve(id)
                 return jsonify(message), 201
             return jsonify({'message': 'Request has already been reviewed'})

@@ -121,12 +121,13 @@ class Request:
             requests.append(dict(zip(columns, request)))
         return requests
 
-    def update_a_request(self, id, title, description, priority):
+    def update_a_request(self, id, title, description,location):
         cur = conn.cursor()
         sql = "UPDATE requests SET request_title=(%s), request_description=(%s),\
-                 request_priority=(%s) WHERE request_id = (%s)"
-        data = (title, description, priority, id)
+                 request_location=(%s) WHERE request_id = (%s)"
+        data = (title, description, location, id)
         cur.execute(sql, data)
+        conn.commit()
         return {'message': 'request updated successfully'}
 
     def delete_a_request(self, id):
@@ -160,6 +161,7 @@ class Request:
         sql = "UPDATE requests SET request_status=(%s) WHERE request_id=(%s)"
         data = ("Approved", id)
         cur.execute(sql, data)
+        conn.commit()
         return {'message': 'request approved'}
 
     def disapprove(self, id):
@@ -167,6 +169,7 @@ class Request:
         sql = "UPDATE requests SET request_status=(%s) WHERE request_id=(%s)"
         data = ('Disapproved', id)
         cur.execute(sql, data)
+        conn.commit()
         return {'message': 'request rejected'}
 
     def resolve(self, id):
@@ -174,4 +177,5 @@ class Request:
         sql = "UPDATE requests SET request_status=(%s) WHERE request_id=(%s)"
         data = ('Resolved', id)
         cur.execute(sql, data)
+        conn.commit()
         return {'message': 'request resolved'}
