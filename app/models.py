@@ -12,7 +12,9 @@ class User():
     def __init__(self):
         pass
 
-    def create_user(self, username, email, password, role=False):
+    def create_user(self, username, email, password, role=None):
+        if role is None:
+            role = False
         cur = conn.cursor()
         sql = "INSERT INTO users (username, email, password, role)\
                             VALUES (%s, %s, %s, %s)"
