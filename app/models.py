@@ -38,7 +38,15 @@ class User():
         sql = "UPDATE users SET role=(%s) WHERE user_id=(%s);"
         data = (role, id)
         cur.execute(sql, data)
-        return ({"message": "User updated"})
+        conn.commit()
+        return ({"message": "User promoted"})
+
+    def delete_user(self, id):
+        cur = conn.cursor()
+        sql = "DELETE from users WHERE user_id = (%s)"
+        data = (id, )
+        cur.execute(sql, data)
+        return ({"message":"User deleted"})
 
     def login(self, name, pswd):
         cur = conn.cursor()

@@ -73,6 +73,17 @@ class TestRequests(unittest.TestCase):
                                  headers=self.headers)
     self.assertEquals(response.status_code, 200)
 
+  def test_admin_view_user_details(self):
+    response = self.client().get('/api/v2/users/1',
+                                  headers=self.headers)
+    self.assertEquals(response.status_code, 200)
+
+  def test_admin_can_delete_user(self):
+    response = self.client().delete('/api/v2/users/1',
+                                  headers=self.headers)
+    self.assertEquals(response.status_code, 200)
+
+
 
 if __name__ == "__main__":
   unittest.main()

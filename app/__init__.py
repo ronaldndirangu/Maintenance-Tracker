@@ -84,8 +84,9 @@ def create_app(config_name):
                 if user['username'] == username and check_password_hash(user['password'], password):
                     token = jwt.encode({"user_id": user['user_id'], 'exp': datetime.datetime.utcnow(
                     ) + datetime.timedelta(minutes=30)}, SECRET_KEY)
+                    role = Users.get_role(user['user_id'])[0][0]
                     return jsonify({'token': token.decode('UTF-8')},
-                             {'message':'Login successful'}), 201
+                             {'message':'Login successful'}, {'role':role}), 201
         return jsonify({"message": "no valid user"}), 401
 
     # Create new request
@@ -220,12 +221,12 @@ def create_app(config_name):
         return jsonify({'message': 'Only allowed for the admin'})
 
     # Promote user to admin
-    @app.route("/api/v2/users/<userid>/promote", methods=["PUT"])
+    @app.route("/api/v2/users/<int:id>/promote", methods=["PUT"])
     @login_required
-    def promote_user(current_user_id, userid):
+    def promote_user(current_user_id, id):
         if Users.get_role(current_user_id)[0][0]:
-            Users.promote_user(userid)
-            return jsonify({"message": "User updated"}), 200
+            message = Users.promote_user(id)
+            return jsonify(message), 200
         else:
             return jsonify({"message": "Only allowed for the admin"}), 200
 
@@ -238,5 +239,26 @@ def create_app(config_name):
             return jsonify(users), 200
         else:
             return jsonify({"message": "Only allowed for the admin"}), 200
+
+    # View user details
+    @app.route("/api/v2/users/<int:id>", methods=["GET"])
+    @login_required
+    def get_user(current_user_id, id):
+        if Users.get_role(current_user_id)[0][0]:
+            user = Users.get_user(id)
+            print(user)
+            return jsonify(user), 200
+        else:
+            return jsonify({"message":"No user found"}), 
+            
+    # Delete a user
+    @app.route("/api/v2/users/<int:id>", methods=["DELETE"])
+    @login_required
+    def delete_user(current_user_id, id):
+        if Users.get_role(current_user_id)[0][0]:
+            message = Users.delete_user(id)
+            return jsonify(message), 200
+        else:
+            return jsonify({"message":"No user found"})
 
     return app
