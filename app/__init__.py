@@ -249,7 +249,7 @@ def create_app(config_name):
             print(user)
             return jsonify(user), 200
         else:
-            return jsonify({"message":"No user found"}), 
+            return jsonify({"message":"No user found"}), 200
             
     # Delete a user
     @app.route("/api/v2/users/<int:id>", methods=["DELETE"])
@@ -259,6 +259,6 @@ def create_app(config_name):
             message = Users.delete_user(id)
             return jsonify(message), 200
         else:
-            return jsonify({"message":"No user found"})
+            return jsonify({"message":"No user found"}), 200
 
     return app
