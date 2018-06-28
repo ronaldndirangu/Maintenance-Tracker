@@ -29,7 +29,6 @@ class TestRequests(unittest.TestCase):
                                   data=json.dumps(self.user),
                                   content_type='application/json')
     data = json.loads(response.data.decode())
-    print(data)
 
     self.assertTrue(data[0]['token'])
     self.assertEquals(response.status_code, 201)
@@ -61,6 +60,7 @@ class TestRequests(unittest.TestCase):
   def test_admin_can_resolve_request(self):
     response = self.client().put('/api/v2/requests/1/resolve',
                                  headers=self.headers)
+    print(response)
     self.assertEquals(response.status_code, 200)
 
   def test_admin_promote_user(self):

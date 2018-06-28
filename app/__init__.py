@@ -199,6 +199,9 @@ def create_app(config_name):
     def approve_request(current_user_id, id):
         if Users.get_role(current_user_id)[0][0]:
             status_list = Requests.get_status(id)
+            print(status_list)
+            if len(status_list) == 0:
+                return jsonify({'message':'No request found'}), 200
             status = status_list[0][0].lower()
             if status == "pending":
                 message = Requests.approve(id)
@@ -214,6 +217,9 @@ def create_app(config_name):
     def disapprove_request(current_user_id, id):
         if Users.get_role(current_user_id)[0][0]:
             status_list = Requests.get_status(id)
+            print(status_list)
+            if len(status_list) == 0:
+                return jsonify({'message':'No request found'}), 200
             status = status_list[0][0].lower()
             print (status)
             if status == "pending":
@@ -230,6 +236,8 @@ def create_app(config_name):
     def resolve_request(current_user_id, id):
         if Users.get_role(current_user_id)[0][0]:
             status_list = Requests.get_status(id)
+            if len(status_list) == 0:
+                return jsonify({'message':'No request found'}), 200
             status = status_list[0][0].lower()
             print (status)
             if status == "approved":
