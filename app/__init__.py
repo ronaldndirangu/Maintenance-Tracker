@@ -5,6 +5,7 @@ import jwt
 import datetime
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
+from validate_email import validate_email
 
 
 Users = User()
@@ -55,13 +56,18 @@ def create_app(config_name):
             all_users = []
             for user in users:
                 all_users.append(user[0])
+
+            for values in new_user.values():
+                if values=="":
+                    return jsonify({'message':'Please fill all fields'})
+            
             if new_user['username'] in all_users:
-                return jsonify({'message': 'user already registered'}), 201
+                return jsonify({'message': 'User already registered'}), 201
 
             if len(request.json['password']) < 6:
                 return jsonify({'message':
                                 'Password should be atleast 6 characters'})
-            elif '@' not in request.json['email']:
+            elif not validate_email(request.json['email']):
                 return jsonify({'message': 'Enter valid email'})
 
             hashed_pswd = generate_password_hash(new_user['password'])
@@ -77,6 +83,9 @@ def create_app(config_name):
         if request.json:
             username = request.json["username"]
             password = request.json["password"]
+        
+        if username=="" or password=="":
+            return jsonify({'message':'Please fill all fields'})
 
         users = Users.login(username, password)
         if users:
@@ -103,6 +112,11 @@ def create_app(config_name):
             "request_status": "Pending",
             "requester_id": current_user_id
         }
+
+        for values in req.values():
+            if values == "":
+                return jsonify({'message':'Please fill all fields'})
+
         requests = Requests.get_user_requests(current_user_id)
         titles = [request['request_title'] for request in requests]
         desc = [request['request_description'] for request in requests]
@@ -141,6 +155,10 @@ def create_app(config_name):
         title = request.json['request_title']
         description = request.json['request_description']
         location = request.json['request_location']
+
+        if title=="" or description=="" or location=="":
+            return jsonify({'message':'Please fill all fields'})
+
         message = Requests.update_a_request(id, title, description, location)
         if message:
             return jsonify(message), 201
