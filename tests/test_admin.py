@@ -16,8 +16,17 @@ class TestRequests(unittest.TestCase):
         "request_priority": "High",
         "request_status": "Pending"
     }
+    self.request_1 = {
+        "request_title": "Test_update request",
+        "request_description": "Testing_update request",
+        "request_location": "Test locationn",
+        "request_priority": "High",
+        "request_status": "Pending"
+    }
+    
     self.user = {"username": 'admin', "email": 'admin@gmail.com',
                  "password": 'admin123', 'role': True}
+    
     # Create test user
     response = self.client().post('/api/v2/auth/signup',
                                   data=json.dumps(self.user),
@@ -26,7 +35,8 @@ class TestRequests(unittest.TestCase):
 
     # Login test user created
     response = self.client().post('/api/v2/auth/login',
-                                  data=json.dumps(self.user),
+                                  data=json.dumps(dict(username="admin",
+                                                  password="admin123")),
                                   content_type='application/json')
     data = json.loads(response.data.decode())
 
@@ -34,12 +44,24 @@ class TestRequests(unittest.TestCase):
     self.assertEquals(response.status_code, 201)
 
     self.headers = {'token': data[0]['token']}
+    print(self.headers)
 
-    # Create user request
+    # Create user request 1
     response = self.client().post('/api/v2/users/requests',
                                   data=json.dumps(self.request),
                                   headers=self.headers,
                                   content_type='application/json')
+    data = json.loads(response.data.decode())
+    print(data)
+    self.assertEquals(response.status_code, 201)
+
+    # Create user request 2
+    response = self.client().post('/api/v2/users/requests',
+                                  data=json.dumps(self.request_1),
+                                  headers=self.headers,
+                                  content_type='application/json')
+    data = json.loads(response.data.decode())
+    print(data)
     self.assertEquals(response.status_code, 201)
 
   def test_view_all_requests(self):
@@ -50,10 +72,12 @@ class TestRequests(unittest.TestCase):
   def test_admin_can_approve_request(self):
     response = self.client().put('/api/v2/requests/1/approve',
                                  headers=self.headers)
+    data = json.loads(response.data.decode())
+    print(data["message"])
     self.assertEquals(response.status_code, 200)
 
   def test_admin_can_disapprove_request(self):
-    response = self.client().put('/api/v2/requests/1/disapprove',
+    response = self.client().put('/api/v2/requests/2/disapprove',
                                  headers=self.headers)
     self.assertEquals(response.status_code, 200)
 
