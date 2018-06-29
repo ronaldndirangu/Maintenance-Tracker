@@ -46,11 +46,20 @@ def create_app(config_name):
     def signup():
         if request.json:
             print(request.json)
-            new_user = {
-                "username": request.json['username'],
-                "email": request.json['email'],
-                "password": request.json['password']
-            }
+            if len(request.json)==3:
+                new_user = {
+                    "username": request.json['username'],
+                    "email": request.json['email'],
+                    "password": request.json['password'],
+                    "role":False
+                }
+            elif len(request.json)==4:                
+                new_user = {
+                    "username": request.json['username'],
+                    "email": request.json['email'],
+                    "password": request.json['password'],
+                    "role": request.json['role']
+                }
 
             users = Users.get_all_users()
             all_users = []
@@ -74,7 +83,7 @@ def create_app(config_name):
 
             Users.create_user(
                 new_user['username'], new_user['email'],
-                hashed_pswd)
+                hashed_pswd, new_user['role'])
             return jsonify({'message': 'User created successfully'}), 201
 
     # User can login using email and password

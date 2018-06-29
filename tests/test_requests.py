@@ -10,9 +10,9 @@ class TestRequests(unittest.TestCase):
             self.app = create_app("testing")
             self.client = self.app.test_client
             self.request = {
-                "request_title": "Test_update request",
-                "request_description": "Testing_update request",
-                "request_location": "Test locationn",
+                "request_title": "Test_update_3 request",
+                "request_description": "Testing_update_3 request",
+                "request_location": "Test locationn_3",
                 "request_priority": "High",
                 "request_status": "Pending"
             }

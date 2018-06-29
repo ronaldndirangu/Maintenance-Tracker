@@ -17,9 +17,9 @@ class TestRequests(unittest.TestCase):
         "request_status": "Pending"
     }
     self.request_1 = {
-        "request_title": "Test_update request",
-        "request_description": "Testing_update request",
-        "request_location": "Test locationn",
+        "request_title": "Test_update_2 request",
+        "request_description": "Testing_update_2 request",
+        "request_location": "Test locationn_2",
         "request_priority": "High",
         "request_status": "Pending"
     }
@@ -39,7 +39,7 @@ class TestRequests(unittest.TestCase):
                                                   password="admin123")),
                                   content_type='application/json')
     data = json.loads(response.data.decode())
-
+    print (data)
     self.assertTrue(data[0]['token'])
     self.assertEquals(response.status_code, 201)
 
@@ -73,7 +73,7 @@ class TestRequests(unittest.TestCase):
     response = self.client().put('/api/v2/requests/1/approve',
                                  headers=self.headers)
     data = json.loads(response.data.decode())
-    print(data["message"])
+    print(data)
     self.assertEquals(response.status_code, 200)
 
   def test_admin_can_disapprove_request(self):
@@ -84,7 +84,6 @@ class TestRequests(unittest.TestCase):
   def test_admin_can_resolve_request(self):
     response = self.client().put('/api/v2/requests/1/resolve',
                                  headers=self.headers)
-    print(response)
     self.assertEquals(response.status_code, 200)
 
   def test_admin_promote_user(self):
