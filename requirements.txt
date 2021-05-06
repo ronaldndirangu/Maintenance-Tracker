@@ -38,7 +38,7 @@ click==6.7
 codecov==2.0.15
 coverage==4.0.3
 Flask==1.0.2
-Flask-Cors==3.0.6
+Flask-Cors==3.0.9
 Flask-RESTful==0.3.6
 gunicorn==19.8.1
 idna==2.6
